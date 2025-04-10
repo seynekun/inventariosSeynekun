@@ -15,6 +15,9 @@ import { RegisterCategory } from "./RegisterCategory";
 import { ListaGenerica } from "../../molecules/ListaGenerica";
 import { useCategoryStore } from "../../../store/CategoryStore";
 import { Device } from "../../../styles/breackpoints";
+import { useDropzone } from "react-dropzone";
+import axios from "axios";
+
 export function RegisterProducts({ onClose, dataSelect, accion }) {
   const { insertproducts, updateproducts } = useProductsStore();
   const { dataCompany } = useCompanyStore();
@@ -29,6 +32,47 @@ export function RegisterProducts({ onClose, dataSelect, accion }) {
   const [openRegistroCategoria, SetopenRegistroCategoria] = useState(false);
   const [stateCategoria, setStateCategoria] = useState(false);
   const [subaccion, setAccion] = useState("");
+  const [imageUrl, setImageUrl] = useState(dataSelect?.imagen || "");
+  const [uploadError, setUploadError] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    accept: {
+      "image/*": [".jpeg", ".jpg", ".png", ".gif"],
+    },
+    multiple: false,
+    onDrop: async (acceptedFiles) => {
+      const file = acceptedFiles[0];
+      if (file) {
+        try {
+          setIsUploading(true);
+          setUploadError(null);
+          const formData = new FormData();
+          formData.append("file", file);
+          formData.append(
+            "upload_preset",
+            import.meta.env.VITE_APP_CLOUDINARY_UPLOAD_PRESET
+          );
+          formData.append(
+            "cloud_name",
+            import.meta.env.VITE_APP_CLOUDINARY_CLOUD_NAME
+          );
+
+          const response = await axios.post(
+            `https://api.cloudinary.com/v1_1/${
+              import.meta.env.VITE_APP_CLOUDINARY_CLOUD_NAME
+            }/image/upload`,
+            formData
+          );
+          setImageUrl(response.data.secure_url);
+        } catch (error) {
+          console.error("Error uploading image:", error);
+          setUploadError("Error al subir la imagen");
+        } finally {
+          setIsUploading(false);
+        }
+      }
+    },
+  });
   const nuevoRegistroMarca = () => {
     SetopenRegistroMarca(!openRegistroMarca);
     setAccion("Nuevo");
@@ -58,6 +102,7 @@ export function RegisterProducts({ onClose, dataSelect, accion }) {
         responsable: data.responsable,
         id_categoria: categoryItemSelect.id,
         id_empresa: dataCompany.id,
+        imagen: imageUrl,
       };
       await updateproducts(p);
       onClose();
@@ -74,6 +119,7 @@ export function RegisterProducts({ onClose, dataSelect, accion }) {
         _responsable: data.responsable,
         _id_categoria: categoryItemSelect.id,
         _id_empresa: dataCompany.id,
+        _imagen: imageUrl,
       };
       await insertproducts(p);
       onClose();
@@ -306,6 +352,29 @@ export function RegisterProducts({ onClose, dataSelect, accion }) {
                 )}
               </InputText>
             </article>
+            <article>
+              <DropzoneContainer
+                {...getRootProps()}
+                $isDragActive={isDragActive}
+                $hasError={!!uploadError}
+              >
+                <input {...getInputProps()} />
+                {isUploading ? (
+                  <p>Cargando imagen...</p>
+                ) : imageUrl ? (
+                  <img
+                    src={imageUrl}
+                    alt="Previsualización"
+                    className="preview-image"
+                  />
+                ) : (
+                  <div className="dropzone-content">
+                    <p>Arrastra la imagen aquí o haz clic</p>
+                    <small>Formatos admitidos: JPEG, PNG, GIF</small>
+                  </div>
+                )}
+              </DropzoneContainer>
+            </article>
           </section>
           <div className="btnguardarContent">
             <Btnsave
@@ -398,6 +467,51 @@ const Container = styled.div`
           grid-column: 2;
         }
       }
+    }
+  }
+`;
+
+const DropzoneContainer = styled.div`
+  border: 2px dashed
+    ${({ $hasError, $isDragActive, theme }) =>
+      $hasError
+        ? "#ff0000" // Usaremos un color fijo para errores
+        : $isDragActive
+        ? theme.primary
+        : theme.bg4}; // Usamos colores de tu tema
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  background-color: ${({ $isDragActive, theme }) =>
+    $isDragActive ? "rgba(239, 85, 43, 0.1)" : theme.bgcards};
+  transition: all 0.3s ease;
+  min-height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    border-color: ${({ theme }) => theme.primary};
+  }
+
+  .preview-image {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: 8px;
+    object-fit: contain;
+  }
+
+  .dropzone-content {
+    color: ${({ theme }) => theme.colorSubtitle};
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+
+    svg {
+      font-size: 2.5rem;
+      color: ${({ theme }) => theme.primary};
     }
   }
 `;
