@@ -164,6 +164,27 @@ export const TableProducts = ({
       },
     },
     {
+      accessorKey: "imagen",
+      header: "Imagen",
+      enableSorting: false,
+      cell: (info) => {
+        const imageUrl = info.getValue();
+        return (
+          <td data-title="Imagen" className="ContentCell">
+            {imageUrl ? (
+              <img src={imageUrl} alt="Imagen" className="imagen" />
+            ) : (
+              <img
+                src="https://media.istockphoto.com/id/1409329028/es/vector/no-hay-imagen-disponible-marcador-de-posici%C3%B3n-miniatura-icono-dise%C3%B1o-de-ilustraci%C3%B3n.jpg?s=612x612&w=0&k=20&c=Bd89b8CBr-IXx9mBbTidc-wu_gtIj8Py_EMr3hGGaPw="
+                alt="sin imagen"
+                className="imagen"
+              />
+            )}
+          </td>
+        );
+      },
+    },
+    {
       accessorKey: "meses_dep",
       header: "Meses de venta",
       enableSorting: false,
@@ -339,6 +360,24 @@ const Container = styled.div`
     tr {
       @media (min-width: ${v.bpbart}) {
         display: table-row;
+      }
+    }
+    .imagen {
+      width: 50px;
+      height: 50px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s ease-in-out;
+
+      &:hover {
+        transform: scale(1.1);
+      }
+
+      @media (max-width: 768px) {
+        width: 40px;
+        height: 40px;
       }
     }
 
