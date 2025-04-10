@@ -55,6 +55,7 @@ export function RegisterProducts({ onClose, dataSelect, accion }) {
         fecha_compra: data.fecha_compra,
         proveedor: data.proveedor,
         meses_dep: data.meses_dep,
+        responsable: data.responsable,
         id_categoria: categoryItemSelect.id,
         id_empresa: dataCompany.id,
       };
@@ -70,6 +71,7 @@ export function RegisterProducts({ onClose, dataSelect, accion }) {
         _fecha_compra: data.fecha_compra,
         _proveedor: data.proveedor,
         _meses_dep: data.meses_dep,
+        _responsable: data.responsable,
         _id_categoria: categoryItemSelect.id,
         _id_empresa: dataCompany.id,
       };
