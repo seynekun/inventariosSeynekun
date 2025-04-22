@@ -15,6 +15,7 @@ import { Paginated } from "./Paginated";
 import { useProductsStore } from "../../../store/ProductsStore";
 import { useState } from "react";
 import { Device } from "../../../styles/breackpoints";
+import { formatCurrency } from "../../../utils";
 
 export const TableProducts = ({
   data,
@@ -121,7 +122,7 @@ export const TableProducts = ({
       enableSorting: false,
       cell: (info) => (
         <td data-title="Precio compra" className="ContentCell">
-          <span>{info.getValue()}</span>
+          <span>{formatCurrency(info.getValue())}</span>
         </td>
       ),
       enableColumnFilter: true,
