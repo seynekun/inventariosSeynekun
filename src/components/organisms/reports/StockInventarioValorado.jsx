@@ -15,11 +15,15 @@ import { formatCurrency } from "../../../utils";
 
 function StockInventarioValorado() {
   const reportInventarioValorado = useProductsStore(
-    (state) => state.reportInventarioValorado
+    (state) => state.reportInventarioValorado,
   );
   const dataCompany = useCompanyStore((state) => state.dataCompany);
 
-  const { data, isLoading, error } = useQuery({
+  const {
+    data: datareporte,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ["reporte stock valorado", { _id_empresa: dataCompany?.id }],
     queryFn: () => reportInventarioValorado({ _id_empresa: dataCompany?.id }),
     enabled: !!dataCompany,
@@ -29,7 +33,7 @@ function StockInventarioValorado() {
   if (error) return <span>Error: {error.message}</span>;
 
   const totalGeneral =
-    data?.reduce((acc, item) => acc + parseFloat(item.total), 0) || 0;
+    datareporte?.reduce((acc, item) => acc + parseFloat(item.total), 0) || 0;
 
   const currentDate = new Date();
   const formattedDate = `${currentDate.toLocaleDateString()} ${currentDate.toLocaleTimeString()}`;
@@ -137,7 +141,7 @@ function StockInventarioValorado() {
               <Text style={styles.colTotal}>Total</Text>
             </View>
 
-            {data?.map((item) => (
+            {datareporte?.map((item) => (
               <View style={styles.tableRow} key={item.id}>
                 <Text style={styles.colDescripcion}>{item.descripcion}</Text>
                 <Text style={styles.colStock}>{item.stock}</Text>

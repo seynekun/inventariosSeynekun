@@ -18,10 +18,10 @@ function StockActualPorProducto() {
   const [stateListaproductos, setstateListaProductos] = useState(false);
   const searchproducts = useProductsStore((state) => state.searchproducts);
   const reportStockxProducto = useProductsStore(
-    (state) => state.reportStockxProducto
+    (state) => state.reportStockxProducto,
   );
   const productosItemSelect = useProductsStore(
-    (state) => state.productosItemSelect
+    (state) => state.productosItemSelect,
   );
   const buscador = useProductsStore((state) => state.buscador);
   const setBuscador = useProductsStore((state) => state.setBuscador);
@@ -52,9 +52,9 @@ function StockActualPorProducto() {
     enabled: dataCompany?.id != null,
   });
 
-  // if (isLoading) {
-  //   return <span>cargando</span>;
-  // }
+  if (isLoading) {
+    return <span>cargando</span>;
+  }
   // if (error) {
   //   return <span>Error {error.message}</span>;
   // }
@@ -141,7 +141,7 @@ function StockActualPorProducto() {
                       descripcion: "Producto",
                       stock: "Stock",
                     },
-                    true
+                    true,
                   )}
                   {data?.map((movement) => renderTableRow(movement))}
                 </View>

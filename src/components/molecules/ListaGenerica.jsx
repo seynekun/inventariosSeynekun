@@ -7,7 +7,7 @@ export function ListaGenerica({ data, setState, funcion, scroll, bottom }) {
     setState();
   }
   return (
-    <Container $scroll={scroll} $bottom={bottom}>
+    <Container scroll={scroll} $bottom={bottom}>
       <section className="contentClose">
         <BtnCerrar funcion={setState} />
       </section>
@@ -28,6 +28,8 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   background: ${({ theme }) => theme.body};
+  overflow-y: scroll;
+  border-radius: 10px;
   color: ${({ theme }) => theme.text};
   position: absolute;
   margin-bottom: 15px;
@@ -42,15 +44,7 @@ const Container = styled.div`
     width: 400px;
   }
   .contentItems {
-    overflow-y: ${(props) => props.$scroll};
-    &::-webkit-scrollbar {
-      width: 6px;
-      border-radius: 10px;
-    }
-    &::-webkit-scrollbar-thumb {
-      background: #484848;
-    }
-    border-radius: 10px;
+    overflow-y: ${(props) => props.scroll};
   }
 `;
 const ItemContainer = styled.div`
