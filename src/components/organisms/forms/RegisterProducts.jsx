@@ -19,6 +19,7 @@ import { useDropzone } from "react-dropzone";
 import axios from "axios";
 
 export function RegisterProducts({ onClose, dataSelect, accion }) {
+  console.log(dataSelect);
   const { insertproducts, updateproducts } = useProductsStore();
   const { dataCompany } = useCompanyStore();
   const brandItemSelect = useBrandStore((state) => state.brandItemSelect);
@@ -50,18 +51,18 @@ export function RegisterProducts({ onClose, dataSelect, accion }) {
           formData.append("file", file);
           formData.append(
             "upload_preset",
-            import.meta.env.VITE_APP_CLOUDINARY_UPLOAD_PRESET
+            import.meta.env.VITE_APP_CLOUDINARY_UPLOAD_PRESET,
           );
           formData.append(
             "cloud_name",
-            import.meta.env.VITE_APP_CLOUDINARY_CLOUD_NAME
+            import.meta.env.VITE_APP_CLOUDINARY_CLOUD_NAME,
           );
 
           const response = await axios.post(
             `https://api.cloudinary.com/v1_1/${
               import.meta.env.VITE_APP_CLOUDINARY_CLOUD_NAME
             }/image/upload`,
-            formData
+            formData,
           );
           setImageUrl(response.data.secure_url);
         } catch (error) {
@@ -103,6 +104,9 @@ export function RegisterProducts({ onClose, dataSelect, accion }) {
         id_categoria: categoryItemSelect.id,
         id_empresa: dataCompany.id,
         imagen: imageUrl,
+        vidautil: data.vidautil,
+        estadoequipo: data.estadoequipo,
+        codigo: data.codigo,
       };
       await updateproducts(p);
       onClose();
@@ -113,13 +117,16 @@ export function RegisterProducts({ onClose, dataSelect, accion }) {
         _stock: parseFloat(data.stock),
         _preciocompra: parseFloat(data.preciocompra),
         _ubicacion: data.ubicacion,
-        _fecha_compra: data.fecha_compra,
+        _fechacompra: data.fecha_compra,
         _proveedor: data.proveedor,
         _meses_dep: data.meses_dep,
         _responsable: data.responsable,
         _id_categoria: categoryItemSelect.id,
         _id_empresa: dataCompany.id,
         _imagen: imageUrl,
+        _vidautil: data.vidautil,
+        _estadoequipo: data.estadoequipo,
+        _codigo: data.codigo,
       };
       await insertproducts(p);
       onClose();
@@ -133,7 +140,15 @@ export function RegisterProducts({ onClose, dataSelect, accion }) {
         descripcion: dataSelect.categoria,
       });
     }
-  }, []);
+  }, [
+    accion,
+    dataSelect.categoria,
+    dataSelect.id_categoria,
+    dataSelect.idmarca,
+    dataSelect.marca,
+    selectBrand,
+    selectCategory,
+  ]);
   return (
     <Container>
       <div className="sub-contenedor">
@@ -255,8 +270,57 @@ export function RegisterProducts({ onClose, dataSelect, accion }) {
                 )}
               </InputText>
             </article>
+            <article>
+              <InputText icono={<v.iconocheck />}>
+                <input
+                  type="text"
+                  className="form__field"
+                  defaultValue={dataSelect.estadoequipo}
+                  placeholder=""
+                  {...register("estadoequipo", {
+                    required: true,
+                  })}
+                />
+                <label className="form__label">Estado del Equipo</label>
+                {errors.estadoequipo?.type === "required" && (
+                  <p>Campo requerido</p>
+                )}
+              </InputText>
+            </article>
+            <article>
+              <InputText icono={<v.iconocheck />}>
+                <input
+                  type="number"
+                  step="0.1"
+                  className="form__field"
+                  defaultValue={dataSelect.vidautil}
+                  placeholder=""
+                  {...register("vidautil", {
+                    required: true,
+                  })}
+                />
+                <label className="form__label">Vida Util del Equipo</label>
+                {errors.vidautil?.type === "required" && <p>Campo requerido</p>}
+              </InputText>
+            </article>
           </section>
+
           <section className="seccion2">
+            <article>
+              <InputText icono={<v.iconocheck />}>
+                <input
+                  type="text"
+                  className="form__field"
+                  placeholder=""
+                  {...register("codigo", {
+                    required: true,
+                  })}
+                  defaultValue={dataSelect.codigo}
+                />
+                <label className="form__label">Código del Equipo</label>
+                {errors.codigo?.type === "required" && <p>Campo requerido</p>}
+              </InputText>
+            </article>
             <article>
               <InputText icono={<v.iconopreciocompra />}>
                 <input
@@ -477,8 +541,8 @@ const DropzoneContainer = styled.div`
       $hasError
         ? "#ff0000" // Usaremos un color fijo para errores
         : $isDragActive
-        ? theme.primary
-        : theme.bg4}; // Usamos colores de tu tema
+          ? theme.primary
+          : theme.bg4}; // Usamos colores de tu tema
   border-radius: 8px;
   padding: 20px;
   text-align: center;

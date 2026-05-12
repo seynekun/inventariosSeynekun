@@ -33,7 +33,6 @@ export const ProductsTemplate = ({ data }) => {
           onClose={() => SetopenRegistro(!openRegistro)}
         />
       )}
-
       <header className="header">
         <Header
           stateConfig={{ state: state, setState: () => setState(!state) }}

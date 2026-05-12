@@ -1,33 +1,39 @@
 import { NavLink, Outlet } from "react-router-dom";
 import styled from "styled-components";
+import BtnExportExcel from "../molecules/BtnExportExcel";
 
 export const ReportsTemplate = () => {
   return (
-    <Container>
-      <PageContainer>
-        <Content>
-          <Outlet />
-        </Content>
-        <Sidebar>
-          <SidebarSection>
-            <SidebarTitle>Stock Actual</SidebarTitle>
-            <SidebarItem to="stock-actual-por-producto">
-              Por producto
-            </SidebarItem>
-            <SidebarItem to="stock-actual-todos">Todos</SidebarItem>
-            <SidebarItem to="stock-bajo-minimo">Bajo del mínimo</SidebarItem>
-          </SidebarSection>
-          <SidebarSection>
-            <SidebarTitle>Entradas y salidas</SidebarTitle>
-            <SidebarItem to="kardex-entradas-salidas">Por producto</SidebarItem>
-          </SidebarSection>
-          <SidebarSection>
-            <SidebarTitle to="ss">Valorizado</SidebarTitle>
-            <SidebarItem to="inventario-valorado">Todos</SidebarItem>
-          </SidebarSection>
-        </Sidebar>
-      </PageContainer>
-    </Container>
+    <>
+      <Container>
+        <PageContainer>
+          <Content>
+            <Outlet />
+          </Content>
+          <Sidebar>
+            <SidebarSection>
+              <SidebarTitle>Stock Actual</SidebarTitle>
+              <SidebarItem to="stock-actual-por-producto">
+                Por producto
+              </SidebarItem>
+              <SidebarItem to="stock-actual-todos">Todos</SidebarItem>
+              <SidebarItem to="stock-bajo-minimo">Bajo del mínimo</SidebarItem>
+            </SidebarSection>
+            <SidebarSection>
+              <SidebarTitle>Entradas y salidas</SidebarTitle>
+              <SidebarItem to="kardex-entradas-salidas">
+                Por producto
+              </SidebarItem>
+            </SidebarSection>
+            <SidebarSection>
+              <SidebarTitle to="ss">Valorizado</SidebarTitle>
+              <SidebarItem to="inventario-valorado">Todos</SidebarItem>
+              <BtnExportExcel />
+            </SidebarSection>
+          </Sidebar>
+        </PageContainer>
+      </Container>
+    </>
   );
 };
 

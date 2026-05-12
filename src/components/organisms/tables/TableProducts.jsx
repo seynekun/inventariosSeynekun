@@ -242,8 +242,8 @@ export const TableProducts = ({
                   ...prev[rowIndex],
                   [columnId]: value,
                 }
-              : row
-          )
+              : row,
+          ),
         ),
     },
   });

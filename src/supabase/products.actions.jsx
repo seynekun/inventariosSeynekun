@@ -3,8 +3,7 @@ import Swal from "sweetalert2";
 
 const tabla = "productos";
 export async function InsertProducts(p) {
-  const { data, error } = await supabase.rpc("insertarproductos", p);
-  console.log("data de productos", data);
+  const { error } = await supabase.rpc("insertarproductos", p);
   if (error) {
     Swal.fire({
       icon: "error",
