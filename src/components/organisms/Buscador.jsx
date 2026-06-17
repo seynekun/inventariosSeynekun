@@ -1,48 +1,94 @@
 import styled from "styled-components";
 import { FaSearch } from "react-icons/fa";
-export function Buscador({ setBuscador, onFocus, funcion }) {
-  function buscar(e) {
-    setBuscador(e.target.value);
-  }
-  function ejecutarfuncion() {
-    if (funcion) {
-      funcion();
-    }
-  }
+import { useEffect, useState } from "react";
+
+export function Buscador({
+  value: initialValue = "",
+  onChange,
+  debounce = 300,
+  ...props
+}) {
+  const [value, setValue] = useState(initialValue);
+
+  useEffect(() => {
+    setValue(initialValue);
+  }, [initialValue]);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      onChange?.(value);
+    }, debounce);
+
+    return () => clearTimeout(timeout);
+  }, [value, debounce, onChange]);
+
   return (
-    <Container onClick={ejecutarfuncion}>
+    <Container>
       <article className="content">
         <FaSearch className="icono" />
-        <input onFocus={onFocus} onChange={buscar} placeholder="...buscar" />
+
+        <input
+          {...props}
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+        />
       </article>
     </Container>
   );
 }
+
 const Container = styled.div`
-  background-color: ${(props) => props.theme.bg};
+  background: ${({ theme }) => theme.bg};
+
   border-radius: 10px;
-  height: 60px;
-  align-items: center;
+
+  height: 55px;
+
   display: flex;
-  color: ${(props) => props.theme.text};
-  border: 1px solid #414244;
+
+  border: 1px solid #d8d8d8;
+
+  transition: 0.2s;
+
+  &:focus-within {
+    border-color: #3b82f6;
+
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+  }
+
   .content {
-    padding: 15px;
-    gap: 10px;
+    padding: 0 16px;
+
     display: flex;
+
     align-items: center;
-    position: relative;
+
+    gap: 12px;
+
     width: 100%;
-    .icono {
-      font-size: 18px;
-    }
-    input {
-      font-size: 18px;
-      width: 100%;
-      outline: none;
-      background: none;
-      border: 0;
-      color: ${(props) => props.theme.text};
+  }
+
+  .icono {
+    font-size: 16px;
+
+    opacity: 0.6;
+  }
+
+  input {
+    flex: 1;
+
+    border: none;
+
+    outline: none;
+
+    background: none;
+
+    font-size: 15px;
+
+    color: ${({ theme }) => theme.text};
+
+    &::placeholder {
+      opacity: 0.5;
     }
   }
 `;

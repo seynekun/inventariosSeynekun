@@ -2,18 +2,15 @@ import { useState } from "react";
 import styled from "styled-components";
 import { Header } from "../organisms/Header";
 import { TableBrand } from "../organisms/tables/TableBrand";
-
-import { useBrandStore } from "../../store/BrandStore";
 import { BtnFilter } from "../molecules/BtnFilter";
 import { ContentFiltro } from "../atoms/ContentFilter";
 import { Title } from "../atoms/Title";
 import { v } from "../../styles/variables";
-import { Buscador } from "../organisms/Buscador";
 import { Lottieanimacion } from "../molecules/Lottieanimacion";
 import vacio from "../../assets/vacio.json";
 import { RegisterBrand } from "../organisms/forms/RegisterBrand";
 
-export const BrandingTemplate = ({ data }) => {
+export const BrandingTemplate = ({ queryMarcas }) => {
   const [state, setState] = useState(false);
   const [dataSelect, setdataSelect] = useState([]);
   const [accion, setAccion] = useState("");
@@ -23,8 +20,6 @@ export const BrandingTemplate = ({ data }) => {
     setAccion("Nuevo");
     setdataSelect([]);
   };
-
-  const setBuscador = useBrandStore((state) => state.setBuscador);
 
   return (
     <Container>
@@ -52,15 +47,13 @@ export const BrandingTemplate = ({ data }) => {
           />
         </ContentFiltro>
       </section>
-      <section className="area2">
-        <Buscador setBuscador={setBuscador} />
-      </section>
+
       <section className="main">
-        {data.length == 0 && (
+        {queryMarcas.data?.length == 0 && (
           <Lottieanimacion alto="300" ancho="300" animacion={vacio} />
         )}
         <TableBrand
-          data={data}
+          data={queryMarcas.data}
           SetopenRegistro={SetopenRegistro}
           setdataSelect={setdataSelect}
           setAccion={setAccion}

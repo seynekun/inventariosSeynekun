@@ -13,6 +13,8 @@ import { useBrandStore } from "../../../store/BrandStore";
 import { v } from "../../../styles/variables";
 import { FaArrowsAltV } from "react-icons/fa";
 import { Paginated } from "./Paginated";
+import { useState } from "react";
+import { Buscador } from "../Buscador";
 
 export const TableBrand = ({
   data,
@@ -21,6 +23,7 @@ export const TableBrand = ({
   setAccion,
 }) => {
   const deleteBrand = useBrandStore((state) => state.deleteBrand);
+  const [columnFilters, setColumnFilters] = useState([]);
 
   const update = (data) => {
     if (data.descripcion === "Generica") {
@@ -86,13 +89,30 @@ export const TableBrand = ({
   const table = useReactTable({
     data,
     columns,
+
+    state: {
+      columnFilters,
+    },
+
+    onColumnFiltersChange: setColumnFilters,
+
     getCoreRowModel: getCoreRowModel(),
+
     getFilteredRowModel: getFilteredRowModel(),
+
     getSortedRowModel: getSortedRowModel(),
+
     getPaginationRowModel: getPaginationRowModel(),
   });
   return (
     <Container>
+      <section className="area2">
+        <Buscador
+          value={table.getColumn("descripcion")?.getFilterValue() ?? ""}
+          onChange={(v) => table.getColumn("descripcion")?.setFilterValue(v)}
+          placeholder="Buscar"
+        />
+      </section>
       <table className="responsive-table">
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (

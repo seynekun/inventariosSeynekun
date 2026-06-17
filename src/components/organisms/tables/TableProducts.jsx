@@ -16,6 +16,7 @@ import { useProductsStore } from "../../../store/ProductsStore";
 import { useState } from "react";
 import { Device } from "../../../styles/breackpoints";
 import { formatCurrency } from "../../../utils";
+import { Buscador } from "../Buscador";
 
 export const TableProducts = ({
   data,
@@ -24,7 +25,6 @@ export const TableProducts = ({
   setAccion,
 }) => {
   const deleteproducts = useProductsStore((state) => state.deleteproducts);
-  const [datas, setData] = useState(data);
   const [columnFilters, setColumnFilters] = useState([]);
 
   function eliminar(p) {
@@ -52,12 +52,7 @@ export const TableProducts = ({
       accessorKey: "descripcion",
       header: "Descripcion",
       cell: (info) => <span>{info.getValue()}</span>,
-      enableColumnFilter: true,
-      filterFn: (row, columnId, filterStatuses) => {
-        if (filterStatuses.length === 0) return true;
-        const status = row.getValue(columnId);
-        return filterStatuses.includes(status?.id);
-      },
+      filterFn: "includesString",
     },
 
     {
@@ -77,12 +72,7 @@ export const TableProducts = ({
         );
       },
 
-      enableColumnFilter: true,
-      filterFn: (row, columnId, filterStatuses) => {
-        if (filterStatuses.length === 0) return true;
-        const status = row.getValue(columnId);
-        return filterStatuses.includes(status?.id);
-      },
+      enableColumnFilter: false,
     },
     {
       accessorKey: "ubicacion",
@@ -93,12 +83,7 @@ export const TableProducts = ({
           <span>{info.getValue()}</span>
         </td>
       ),
-      enableColumnFilter: true,
-      filterFn: (row, columnId, filterStatuses) => {
-        if (filterStatuses.length === 0) return true;
-        const status = row.getValue(columnId);
-        return filterStatuses.includes(status?.id);
-      },
+      enableColumnFilter: false,
     },
     {
       accessorKey: "fecha_compra",
@@ -109,12 +94,7 @@ export const TableProducts = ({
           <span>{info.getValue()}</span>
         </td>
       ),
-      enableColumnFilter: true,
-      filterFn: (row, columnId, filterStatuses) => {
-        if (filterStatuses.length === 0) return true;
-        const status = row.getValue(columnId);
-        return filterStatuses.includes(status?.id);
-      },
+      enableColumnFilter: false,
     },
     {
       accessorKey: "preciocompra",
@@ -125,12 +105,7 @@ export const TableProducts = ({
           <span>{formatCurrency(info.getValue())}</span>
         </td>
       ),
-      enableColumnFilter: true,
-      filterFn: (row, columnId, filterStatuses) => {
-        if (filterStatuses.length === 0) return true;
-        const status = row.getValue(columnId);
-        return filterStatuses.includes(status?.id);
-      },
+      enableColumnFilter: false,
     },
     {
       accessorKey: "proveedor",
@@ -141,12 +116,7 @@ export const TableProducts = ({
           <span>{info.getValue()}</span>
         </td>
       ),
-      enableColumnFilter: true,
-      filterFn: (row, columnId, filterStatuses) => {
-        if (filterStatuses.length === 0) return true;
-        const status = row.getValue(columnId);
-        return filterStatuses.includes(status?.id);
-      },
+      enableColumnFilter: false,
     },
     {
       accessorKey: "responsable",
@@ -157,33 +127,7 @@ export const TableProducts = ({
           <span>{info.getValue()}</span>
         </td>
       ),
-      enableColumnFilter: true,
-      filterFn: (row, columnId, filterStatuses) => {
-        if (filterStatuses.length === 0) return true;
-        const status = row.getValue(columnId);
-        return filterStatuses.includes(status?.id);
-      },
-    },
-    {
-      accessorKey: "imagen",
-      header: "Imagen",
-      enableSorting: false,
-      cell: (info) => {
-        const imageUrl = info.getValue();
-        return (
-          <td data-title="Imagen" className="ContentCell">
-            {imageUrl ? (
-              <img src={imageUrl} alt="Imagen" className="imagen" />
-            ) : (
-              <img
-                src="https://media.istockphoto.com/id/1409329028/es/vector/no-hay-imagen-disponible-marcador-de-posici%C3%B3n-miniatura-icono-dise%C3%B1o-de-ilustraci%C3%B3n.jpg?s=612x612&w=0&k=20&c=Bd89b8CBr-IXx9mBbTidc-wu_gtIj8Py_EMr3hGGaPw="
-                alt="sin imagen"
-                className="imagen"
-              />
-            )}
-          </td>
-        );
-      },
+      enableColumnFilter: false,
     },
     {
       accessorKey: "meses_dep",
@@ -194,12 +138,7 @@ export const TableProducts = ({
           <span>{info.getValue()}</span>
         </td>
       ),
-      enableColumnFilter: true,
-      filterFn: (row, columnId, filterStatuses) => {
-        if (filterStatuses.length === 0) return true;
-        const status = row.getValue(columnId);
-        return filterStatuses.includes(status?.id);
-      },
+      enableColumnFilter: false,
     },
     {
       accessorKey: "acciones",
@@ -214,41 +153,37 @@ export const TableProducts = ({
           />
         </td>
       ),
-      enableColumnFilter: true,
-      filterFn: (row, columnId, filterStatuses) => {
-        if (filterStatuses.length === 0) return true;
-        const status = row.getValue(columnId);
-        return filterStatuses.includes(status?.id);
-      },
+      enableColumnFilter: false,
     },
   ];
+
   const table = useReactTable({
     data,
     columns,
+
     state: {
       columnFilters,
     },
+
+    onColumnFiltersChange: setColumnFilters,
+
     getCoreRowModel: getCoreRowModel(),
+
     getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
+
     getSortedRowModel: getSortedRowModel(),
-    columnResizeMode: "onChange",
-    meta: {
-      updateData: (rowIndex, columnId, value) =>
-        setData((prev) =>
-          prev.map((row, index) =>
-            index === rowIndex
-              ? {
-                  ...prev[rowIndex],
-                  [columnId]: value,
-                }
-              : row,
-          ),
-        ),
-    },
+
+    getPaginationRowModel: getPaginationRowModel(),
   });
   return (
     <Container>
+      <section className="area2">
+        <Buscador
+          value={table.getColumn("descripcion")?.getFilterValue() ?? ""}
+          onChange={(v) => table.getColumn("descripcion")?.setFilterValue(v)}
+          placeholder="Buscar"
+        />
+      </section>
       <table className="responsive-table">
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (

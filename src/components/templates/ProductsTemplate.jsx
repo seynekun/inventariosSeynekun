@@ -5,15 +5,12 @@ import { BtnFilter } from "../molecules/BtnFilter";
 import { ContentFiltro } from "../atoms/ContentFilter";
 import { Title } from "../atoms/Title";
 import { v } from "../../styles/variables";
-import { Buscador } from "../organisms/Buscador";
 import { Lottieanimacion } from "../molecules/Lottieanimacion";
 import vacio from "../../assets/vacio.json";
 import { TableProducts } from "../organisms/tables/TableProducts";
-import { useProductsStore } from "../../store/ProductsStore";
 import { RegisterProducts } from "../organisms/forms/RegisterProducts";
 
-export const ProductsTemplate = ({ data }) => {
-  const setBuscador = useProductsStore((state) => state.setBuscador);
+export const ProductsTemplate = ({ queryProducts }) => {
   const [state, setState] = useState(false);
   const [dataSelect, setdataSelect] = useState([]);
   const [accion, setAccion] = useState("");
@@ -49,15 +46,13 @@ export const ProductsTemplate = ({ data }) => {
           />
         </ContentFiltro>
       </section>
-      <section className="area2">
-        <Buscador setBuscador={setBuscador} />
-      </section>
+
       <section className="main">
-        {data?.length == 0 && (
+        {queryProducts.data?.length == 0 && (
           <Lottieanimacion alto="300" ancho="300" animacion={vacio} />
         )}
         <TableProducts
-          data={data}
+          data={queryProducts.data || []}
           SetopenRegistro={SetopenRegistro}
           setdataSelect={setdataSelect}
           setAccion={setAccion}

@@ -17,16 +17,18 @@ import { useCategoryStore } from "../../../store/CategoryStore";
 import { Device } from "../../../styles/breackpoints";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
+import { useQueryClient } from "@tanstack/react-query";
+import useMarcas from "../../../hooks/useBrand";
 
 export function RegisterProducts({ onClose, dataSelect, accion }) {
-  console.log(dataSelect);
+  const queryClient = useQueryClient();
   const { insertproducts, updateproducts } = useProductsStore();
-  const { dataCompany } = useCompanyStore();
+  const { queryMarcas } = useMarcas();
+  const dataCompany = useCompanyStore((state) => state.dataCompany);
   const brandItemSelect = useBrandStore((state) => state.brandItemSelect);
   const selectBrand = useBrandStore((state) => state.selectBrand);
   const { dataCategories, selectCategory, categoryItemSelect } =
     useCategoryStore();
-  const { dataBrand } = useBrandStore();
 
   const [stateBrand, setStateBrand] = useState(false);
   const [openRegistroMarca, SetopenRegistroMarca] = useState(false);
@@ -109,6 +111,9 @@ export function RegisterProducts({ onClose, dataSelect, accion }) {
         codigo: data.codigo,
       };
       await updateproducts(p);
+      queryClient.invalidateQueries({
+        queryKey: ["mostrar productos", dataCompany.id],
+      });
       onClose();
     } else {
       const p = {
@@ -129,10 +134,14 @@ export function RegisterProducts({ onClose, dataSelect, accion }) {
         _codigo: data.codigo,
       };
       await insertproducts(p);
+      queryClient.invalidateQueries({
+        queryKey: ["mostrar productos", dataCompany.id],
+      });
       onClose();
     }
   }
   useEffect(() => {
+    console.log(dataSelect);
     if (accion === "Editar") {
       selectBrand({ id: dataSelect.idmarca, descripcion: dataSelect.marca });
       selectCategory({
@@ -199,7 +208,7 @@ export function RegisterProducts({ onClose, dataSelect, accion }) {
                   setState={() => setStateBrand(!stateBrand)}
                   bottom="-260px"
                   scroll="scroll"
-                  data={dataBrand}
+                  data={queryMarcas.data || []}
                   funcion={selectBrand}
                 />
               )}
