@@ -15,6 +15,9 @@ import { FaArrowsAltV } from "react-icons/fa";
 import { Paginated } from "./Paginated";
 import { useState } from "react";
 import { Buscador } from "../Buscador";
+import { useCallback } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { useCompanyStore } from "../../../store/companyStore";
 
 export const TableBrand = ({
   data,
@@ -22,8 +25,14 @@ export const TableBrand = ({
   setdataSelect,
   setAccion,
 }) => {
+  const queryClient = useQueryClient();
+  const company = useCompanyStore((state) => state.dataCompany);
   const deleteBrand = useBrandStore((state) => state.deleteBrand);
   const [columnFilters, setColumnFilters] = useState([]);
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 20,
+  });
 
   const update = (data) => {
     if (data.descripcion === "Generica") {
@@ -58,6 +67,9 @@ export const TableBrand = ({
     }).then(async (result) => {
       if (result.isConfirmed) {
         await deleteBrand({ id: p.id });
+        queryClient.invalidateQueries({
+          queryKey: ["mostrar marca", { id_empresa: company?.id }],
+        });
       }
     });
   };
@@ -88,13 +100,19 @@ export const TableBrand = ({
   ];
   const table = useReactTable({
     data,
+
     columns,
 
     state: {
       columnFilters,
+      pagination,
     },
 
     onColumnFiltersChange: setColumnFilters,
+
+    onPaginationChange: setPagination,
+
+    autoResetPageIndex: false,
 
     getCoreRowModel: getCoreRowModel(),
 
@@ -104,12 +122,26 @@ export const TableBrand = ({
 
     getPaginationRowModel: getPaginationRowModel(),
   });
+  const handleFilter = useCallback(
+    (value) => {
+      table.getColumn("descripcion")?.setFilterValue(value);
+      setPagination((prev) =>
+        prev.pageIndex === 0
+          ? prev
+          : {
+              ...prev,
+              pageIndex: 0,
+            },
+      );
+    },
+    [table],
+  );
   return (
     <Container>
       <section className="area2">
         <Buscador
           value={table.getColumn("descripcion")?.getFilterValue() ?? ""}
-          onChange={(v) => table.getColumn("descripcion")?.setFilterValue(v)}
+          onChange={handleFilter}
           placeholder="Buscar"
         />
       </section>

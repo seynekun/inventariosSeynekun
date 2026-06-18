@@ -4,7 +4,7 @@ import { useState } from "react";
 import { v } from "../../styles/variables";
 import { TableKardex } from "./tables/TableKardex";
 
-export const Tabs = ({ data }) => {
+export const Tabs = ({ queryKardex }) => {
   const [activeTab, setactiveTab] = useState(0);
   const handleClick = (index) => {
     setactiveTab(index);
@@ -23,7 +23,7 @@ export const Tabs = ({ data }) => {
       </ul>
 
       <div className="tab-content">
-        {activeTab === 0 && <TableKardex data={data} />}
+        {activeTab === 0 && <TableKardex data={queryKardex.data} />}
         {activeTab === 1 && <span>area 2</span>}
         {activeTab === 2 && <span>area 3</span>}
       </div>

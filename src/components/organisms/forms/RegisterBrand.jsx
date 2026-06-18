@@ -8,8 +8,10 @@ import { useCompanyStore } from "../../../store/companyStore";
 
 import { useBrandStore } from "../../../store/BrandStore";
 import { ConvertirCapitalize } from "../../../utils/Conversiones";
+import { useQueryClient } from "@tanstack/react-query";
 export function RegisterBrand({ onClose, dataSelect, accion }) {
   const { insertBrands, updateBrand } = useBrandStore();
+  const queryClient = useQueryClient();
   const { dataCompany } = useCompanyStore();
   const {
     register,
@@ -32,6 +34,14 @@ export function RegisterBrand({ onClose, dataSelect, accion }) {
       await insertBrands(p);
       onClose();
     }
+    queryClient.invalidateQueries({
+      queryKey: [
+        "mostrar marca",
+        {
+          id_empresa: dataCompany?.id,
+        },
+      ],
+    });
   }
   return (
     <Container>

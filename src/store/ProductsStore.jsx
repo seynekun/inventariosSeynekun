@@ -7,14 +7,20 @@ import {
   ReportStockBajoMinimo,
   ReportStockProductsAll,
   ReportStockXProducto,
+  SearchProducts,
   UpdateProducts,
 } from "../supabase/products.actions";
 
 export const useProductsStore = create((set) => ({
+  dataProducts: [],
+  productosItemSelect: [],
+  buscador: "",
+  setBuscador: (p) => {
+    set({ buscador: p });
+  },
   setItemSelect: (p) => {
     set({ productosItemSelect: p });
   },
-  productosItemSelect: [],
 
   selectproducts: (p) => {
     set({ productosItemSelect: p });
@@ -29,6 +35,11 @@ export const useProductsStore = create((set) => ({
     await UpdateProducts(p);
   },
 
+  searchproducts: async (p) => {
+    const response = await SearchProducts(p);
+    set({ dataProducts: response });
+    return response;
+  },
   reportStoreProductosAll: async (p) => {
     const response = await ReportStockProductsAll(p);
     return response;

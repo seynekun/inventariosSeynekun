@@ -17,6 +17,7 @@ import { useState } from "react";
 import { Device } from "../../../styles/breackpoints";
 import { formatCurrency } from "../../../utils";
 import { Buscador } from "../Buscador";
+import { useCallback } from "react";
 
 export const TableProducts = ({
   data,
@@ -26,6 +27,10 @@ export const TableProducts = ({
 }) => {
   const deleteproducts = useProductsStore((state) => state.deleteproducts);
   const [columnFilters, setColumnFilters] = useState([]);
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 20,
+  });
 
   function eliminar(p) {
     Swal.fire({
@@ -159,13 +164,19 @@ export const TableProducts = ({
 
   const table = useReactTable({
     data,
+
     columns,
 
     state: {
       columnFilters,
+      pagination,
     },
 
     onColumnFiltersChange: setColumnFilters,
+
+    onPaginationChange: setPagination,
+
+    autoResetPageIndex: false,
 
     getCoreRowModel: getCoreRowModel(),
 
@@ -175,12 +186,26 @@ export const TableProducts = ({
 
     getPaginationRowModel: getPaginationRowModel(),
   });
+  const handleFilter = useCallback(
+    (value) => {
+      table.getColumn("descripcion")?.setFilterValue(value);
+      setPagination((prev) =>
+        prev.pageIndex === 0
+          ? prev
+          : {
+              ...prev,
+              pageIndex: 0,
+            },
+      );
+    },
+    [table],
+  );
   return (
     <Container>
       <section className="area2">
         <Buscador
           value={table.getColumn("descripcion")?.getFilterValue() ?? ""}
-          onChange={(v) => table.getColumn("descripcion")?.setFilterValue(v)}
+          onChange={handleFilter}
           placeholder="Buscar"
         />
       </section>

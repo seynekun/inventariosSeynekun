@@ -8,9 +8,11 @@ import { ConvertirCapitalize } from "../../../utils/Conversiones";
 import { CirclePicker } from "react-color";
 import { useEffect, useState } from "react";
 import { useCategoryStore } from "../../../store/CategoryStore";
+import { useQueryClient } from "@tanstack/react-query";
 export function RegisterCategory({ onClose, dataSelect, accion }) {
   const [currentColor, setColor] = useState("#F44336");
   const { insertCategorys, updateCategory } = useCategoryStore();
+  const queryClient = useQueryClient();
   const { dataCompany } = useCompanyStore();
   const {
     register,
@@ -38,6 +40,9 @@ export function RegisterCategory({ onClose, dataSelect, accion }) {
       await insertCategorys(p);
       onClose();
     }
+    queryClient.invalidateQueries({
+      queryKey: ["mostrar categoria", { id_empresa: dataCompany?.id }],
+    });
   }
   useEffect(() => {
     if (accion === "Editar") {

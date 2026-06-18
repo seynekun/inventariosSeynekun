@@ -14,6 +14,11 @@ import { FaArrowsAltV } from "react-icons/fa";
 import { Paginated } from "./Paginated";
 import { useCategoryStore } from "../../../store/CategoryStore";
 import { Colorcontent } from "../../atoms/Colorcontent";
+import { useState } from "react";
+import { useCallback } from "react";
+import { Buscador } from "../Buscador";
+import { useCompanyStore } from "../../../store/companyStore";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const TableCategory = ({
   data,
@@ -21,7 +26,14 @@ export const TableCategory = ({
   setdataSelect,
   setAccion,
 }) => {
+  const queryClient = useQueryClient();
   const deleteCategory = useCategoryStore((state) => state.deleteCategory);
+  const company = useCompanyStore((state) => state.dataCompany);
+  const [columnFilters, setColumnFilters] = useState([]);
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 20,
+  });
 
   const update = (data) => {
     if (data.descripcion === "General") {
@@ -56,6 +68,9 @@ export const TableCategory = ({
     }).then(async (result) => {
       if (result.isConfirmed) {
         await deleteCategory({ id: p.id });
+        queryClient.invalidateQueries({
+          queryKey: ["mostrar categoria", { id_empresa: company?.id }],
+        });
       }
     });
   };
@@ -97,14 +112,51 @@ export const TableCategory = ({
   ];
   const table = useReactTable({
     data,
+
     columns,
+
+    state: {
+      columnFilters,
+      pagination,
+    },
+
+    onColumnFiltersChange: setColumnFilters,
+
+    onPaginationChange: setPagination,
+
+    autoResetPageIndex: false,
+
     getCoreRowModel: getCoreRowModel(),
+
     getFilteredRowModel: getFilteredRowModel(),
+
     getSortedRowModel: getSortedRowModel(),
+
     getPaginationRowModel: getPaginationRowModel(),
   });
+  const handleFilter = useCallback(
+    (value) => {
+      table.getColumn("descripcion")?.setFilterValue(value);
+      setPagination((prev) =>
+        prev.pageIndex === 0
+          ? prev
+          : {
+              ...prev,
+              pageIndex: 0,
+            },
+      );
+    },
+    [table],
+  );
   return (
     <Container>
+      <section className="area2">
+        <Buscador
+          value={table.getColumn("descripcion")?.getFilterValue() ?? ""}
+          onChange={handleFilter}
+          placeholder="Buscar"
+        />
+      </section>
       <table className="responsive-table">
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (

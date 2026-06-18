@@ -1,43 +1,28 @@
-import { useQuery } from "@tanstack/react-query";
 import { useCompanyStore } from "../store/companyStore";
 import { SpinnerLoading } from "../components/molecules/SpinnerLoading";
 import { CategoryTemplate } from "../components/templates/CategoryTemplate";
-import { useCategoryStore } from "../store/CategoryStore";
 import { useUsersStore } from "../store/UsersStore";
 import { AdblockPage } from "../components/molecules/AdblockPage";
+import useCategories from "../hooks/useCategories";
 
 export const Category = () => {
-  const { showCategory, dataCategories, searchCategory, buscador } =
-    useCategoryStore();
+  const dataCompany = useCompanyStore((state) => state.dataCompany);
+  const { queryCategories } = useCategories({ company: dataCompany });
+
   const dataPermisos = useUsersStore((state) => state.dataPermisos);
   const statePermiso = dataPermisos.some((element) =>
-    element.modulos.nombre.includes("Categoria de productos")
+    element.modulos.nombre.includes("Categoria de productos"),
   );
 
-  const dataCompany = useCompanyStore((state) => state.dataCompany);
-  const { isLoading, error } = useQuery({
-    queryKey: ["mostrar categoria", { id_empresa: dataCompany?.id }],
-    queryFn: () => showCategory({ id_empresa: dataCompany?.id }),
-    enabled: dataCompany?.id != null,
-  });
-  useQuery({
-    queryKey: [
-      "buscar categoria",
-      { id_empresa: dataCompany.id, descripcion: buscador },
-    ],
-    queryFn: () =>
-      searchCategory({ id_empresa: dataCompany.id, descripcion: buscador }),
-    enabled: dataCompany.id != null,
-  });
   if (statePermiso == false) {
     return <AdblockPage state={statePermiso} />;
   }
-  if (isLoading) {
+  if (queryCategories.isLoading) {
     return <SpinnerLoading />;
   }
-  if (error) {
+  if (queryCategories.error) {
     return <span>Error...</span>;
   }
-
-  return <CategoryTemplate data={dataCategories} />;
+  if (queryCategories.data)
+    return <CategoryTemplate queryCategories={queryCategories} />;
 };

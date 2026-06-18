@@ -3,13 +3,11 @@ import styled from "styled-components";
 import { Header } from "../organisms/Header";
 import { ContentFiltro } from "../atoms/ContentFilter";
 import { Title } from "../atoms/Title";
-import { Buscador } from "../organisms/Buscador";
 import { Btnsave } from "../molecules/BtnSave";
 import { Tabs } from "../organisms/Tabs";
 import { RegisterKardex } from "../organisms/forms/RegisterKardex";
-import { useKardexStore } from "../../store/KardexStore";
 
-export const KardexTemplate = ({ data }) => {
+export const KardexTemplate = ({ queryKardex }) => {
   const [state, setState] = useState(false);
   const [dataSelect, setdataSelect] = useState([]);
   const [accion, setAccion] = useState("");
@@ -23,8 +21,6 @@ export const KardexTemplate = ({ data }) => {
     SetopenRegistro(true);
     setTipo("salida");
   }
-
-  const setBuscador = useKardexStore((state) => state.setBuscador);
 
   return (
     <Container>
@@ -49,11 +45,9 @@ export const KardexTemplate = ({ data }) => {
           <Btnsave bgcolor="#fb6661" titulo="-Salida" funcion={nuevasalida} />
         </ContentFiltro>
       </section>
-      <section className="area2">
-        <Buscador setBuscador={setBuscador} />
-      </section>
+
       <section className="main">
-        <Tabs data={data} />
+        <Tabs queryKardex={queryKardex} />
       </section>
     </Container>
   );

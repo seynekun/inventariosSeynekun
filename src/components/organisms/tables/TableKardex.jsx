@@ -14,10 +14,29 @@ import { Device } from "../../../styles/breackpoints";
 import { useKardexStore } from "../../../store/KardexStore";
 import { v } from "../../../styles/variables";
 import { ContentAccionesTabla } from "../ContentAccionesTabla";
+import { useState } from "react";
+import { Buscador } from "../Buscador";
+import { useCallback } from "react";
 
 export const TableKardex = ({ data }) => {
   const deleteKardex = useKardexStore((state) => state.deleteKardex);
+  const [globalFilter, setGlobalFilter] = useState("");
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 20,
+  });
+  const multiFilter = (row, _, value) => {
+    const search = value.toLowerCase();
 
+    return (
+      String(row.original.descripcion ?? "")
+        .toLowerCase()
+        .includes(search) ||
+      String(row.original.detalle ?? "")
+        .toLowerCase()
+        .includes(search)
+    );
+  };
   const eliminar = (p) => {
     if (p.estado === 0) {
       Swal.fire({
@@ -55,12 +74,8 @@ export const TableKardex = ({ data }) => {
           {info.getValue()}
         </span>
       ),
+      filterFn: "includesString",
       enableColumnFilter: true,
-      filterFn: (row, columnId, filterStatuses) => {
-        if (filterStatuses.length === 0) return true;
-        const status = row.getValue(columnId);
-        return filterStatuses.includes(status?.id);
-      },
     },
     {
       accessorKey: "fecha",
@@ -72,11 +87,6 @@ export const TableKardex = ({ data }) => {
         </td>
       ),
       enableColumnFilter: true,
-      filterFn: (row, columnId, filterStatuses) => {
-        if (filterStatuses.length === 0) return true;
-        const status = row.getValue(columnId);
-        return filterStatuses.includes(status?.id);
-      },
     },
     {
       accessorKey: "tipo",
@@ -96,43 +106,28 @@ export const TableKardex = ({ data }) => {
         </td>
       ),
       enableColumnFilter: true,
-      filterFn: (row, columnId, filterStatuses) => {
-        if (filterStatuses.length === 0) return true;
-        const status = row.getValue(columnId);
-        return filterStatuses.includes(status?.id);
-      },
     },
     {
       accessorKey: "detalle",
+
       header: "Detalle",
-      enableSorting: false,
-      cell: (info) => (
-        <td data-title="Usuario" className="ContentCell">
-          <span>{info.getValue()}</span>
-        </td>
-      ),
+
+      filterFn: "includesString",
+
       enableColumnFilter: true,
-      filterFn: (row, columnId, filterStatuses) => {
-        if (filterStatuses.length === 0) return true;
-        const status = row.getValue(columnId);
-        return filterStatuses.includes(status?.id);
-      },
+
+      cell: (info) => <span>{info.getValue()}</span>,
     },
     {
       accessorKey: "nombres",
       header: "Usuario",
       enableSorting: false,
       cell: (info) => (
-        <td data-title="Usuario" className="ContentCell">
+        <td data-title="Nombres" className="ContentCell">
           <span>{info.getValue()}</span>
         </td>
       ),
       enableColumnFilter: true,
-      filterFn: (row, columnId, filterStatuses) => {
-        if (filterStatuses.length === 0) return true;
-        const status = row.getValue(columnId);
-        return filterStatuses.includes(status?.id);
-      },
     },
     {
       accessorKey: "cantidad",
@@ -144,11 +139,6 @@ export const TableKardex = ({ data }) => {
         </td>
       ),
       enableColumnFilter: true,
-      filterFn: (row, columnId, filterStatuses) => {
-        if (filterStatuses.length === 0) return true;
-        const status = row.getValue(columnId);
-        return filterStatuses.includes(status?.id);
-      },
     },
     {
       accessorKey: "stock",
@@ -159,12 +149,8 @@ export const TableKardex = ({ data }) => {
           <span>{info.getValue()}</span>
         </td>
       ),
+      filterFn: "includesString",
       enableColumnFilter: true,
-      filterFn: (row, columnId, filterStatuses) => {
-        if (filterStatuses.length === 0) return true;
-        const status = row.getValue(columnId);
-        return filterStatuses.includes(status?.id);
-      },
     },
     {
       accessorKey: "acciones",
@@ -183,14 +169,53 @@ export const TableKardex = ({ data }) => {
   ];
   const table = useReactTable({
     data,
+
     columns,
+
+    state: {
+      globalFilter,
+      pagination,
+    },
+
+    globalFilterFn: multiFilter,
+
+    onGlobalFilterChange: setGlobalFilter,
+
+    onPaginationChange: setPagination,
+
+    autoResetPageIndex: false,
+
     getCoreRowModel: getCoreRowModel(),
+
     getFilteredRowModel: getFilteredRowModel(),
+
     getSortedRowModel: getSortedRowModel(),
+
     getPaginationRowModel: getPaginationRowModel(),
   });
+  const handleFilter = useCallback((value) => {
+    setGlobalFilter(value);
+
+    setPagination((prev) =>
+      prev.pageIndex === 0
+        ? prev
+        : {
+            ...prev,
+            pageIndex: 0,
+          },
+    );
+  }, []);
   return (
     <Container>
+      <section className="area2">
+        <Buscador
+          value={table.getColumn("descripcion")?.getFilterValue() ?? ""}
+          onChange={handleFilter}
+          placeholder="
+Buscar producto o detalle
+"
+        />
+      </section>
       <table className="responsive-table">
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (

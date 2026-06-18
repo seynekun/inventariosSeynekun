@@ -111,9 +111,6 @@ export function RegisterProducts({ onClose, dataSelect, accion }) {
         codigo: data.codigo,
       };
       await updateproducts(p);
-      queryClient.invalidateQueries({
-        queryKey: ["mostrar productos", dataCompany.id],
-      });
       onClose();
     } else {
       const p = {
@@ -134,14 +131,13 @@ export function RegisterProducts({ onClose, dataSelect, accion }) {
         _codigo: data.codigo,
       };
       await insertproducts(p);
-      queryClient.invalidateQueries({
-        queryKey: ["mostrar productos", dataCompany.id],
-      });
       onClose();
     }
+    queryClient.invalidateQueries({
+      queryKey: ["mostrar productos", dataCompany.id],
+    });
   }
   useEffect(() => {
-    console.log(dataSelect);
     if (accion === "Editar") {
       selectBrand({ id: dataSelect.idmarca, descripcion: dataSelect.marca });
       selectCategory({
@@ -151,6 +147,7 @@ export function RegisterProducts({ onClose, dataSelect, accion }) {
     }
   }, [
     accion,
+    dataSelect,
     dataSelect.categoria,
     dataSelect.id_categoria,
     dataSelect.idmarca,

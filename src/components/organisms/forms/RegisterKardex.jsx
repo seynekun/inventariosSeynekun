@@ -4,7 +4,6 @@ import { v } from "../../../styles/variables";
 import { InputText } from "./InputText";
 import { Btnsave } from "../../molecules/BtnSave";
 import { useCompanyStore } from "../../../store/companyStore";
-import { Buscador } from "../Buscador";
 import { useState } from "react";
 import { ListaGenerica } from "../../molecules/ListaGenerica";
 import { useProductsStore } from "../../../store/ProductsStore";
@@ -12,14 +11,16 @@ import { CardProductSelect } from "../../molecules/CardProductSelect";
 import { useKardexStore } from "../../../store/KardexStore";
 import { useUsersStore } from "../../../store/UsersStore";
 import { useQueryClient } from "@tanstack/react-query";
+import { BuscadorItem } from "../BuscadorItem";
 export function RegisterKardex({ onClose, dataSelect, tipo }) {
   const insertKardexs = useKardexStore((state) => state.insertKardexs);
   const idUsuario = useUsersStore((state) => state.idUsuario);
   const [stateListaProd, SetstateListaProd] = useState(false);
-  const dataproductos = useProductsStore((state) => state.dataproductos);
+  const dataproductos = useProductsStore((state) => state.dataProducts);
+
   const selectproducts = useProductsStore((state) => state.selectproducts);
   const productosItemSelect = useProductsStore(
-    (state) => state.productosItemSelect
+    (state) => state.productosItemSelect,
   );
   const setItemSelect = useProductsStore((state) => state.setItemSelect);
   const setBuscador = useProductsStore((state) => state.setBuscador);
@@ -60,7 +61,7 @@ export function RegisterKardex({ onClose, dataSelect, tipo }) {
         </div>
         <div className="contentBuscador">
           <div onClick={() => SetstateListaProd(!stateListaProd)}>
-            <Buscador setBuscador={setBuscador} />
+            <BuscadorItem setBuscador={setBuscador} />
           </div>
           {stateListaProd && (
             <ListaGenerica

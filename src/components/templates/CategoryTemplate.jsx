@@ -5,14 +5,12 @@ import { BtnFilter } from "../molecules/BtnFilter";
 import { ContentFiltro } from "../atoms/ContentFilter";
 import { Title } from "../atoms/Title";
 import { v } from "../../styles/variables";
-import { Buscador } from "../organisms/Buscador";
 import { Lottieanimacion } from "../molecules/Lottieanimacion";
 import vacio from "../../assets/vacio.json";
 import { RegisterCategory } from "../organisms/forms/RegisterCategory";
 import { TableCategory } from "../organisms/tables/TableCategory";
-import { useCategoryStore } from "../../store/CategoryStore";
 
-export const CategoryTemplate = ({ data }) => {
+export const CategoryTemplate = ({ queryCategories }) => {
   const [state, setState] = useState(false);
   const [dataSelect, setdataSelect] = useState([]);
   const [accion, setAccion] = useState("");
@@ -22,8 +20,6 @@ export const CategoryTemplate = ({ data }) => {
     setAccion("Nuevo");
     setdataSelect([]);
   };
-
-  const setBuscador = useCategoryStore((state) => state.setBuscador);
 
   return (
     <Container>
@@ -51,15 +47,13 @@ export const CategoryTemplate = ({ data }) => {
           />
         </ContentFiltro>
       </section>
-      <section className="area2">
-        <Buscador setBuscador={setBuscador} />
-      </section>
+
       <section className="main">
-        {data.length == 0 && (
+        {queryCategories.data?.length == 0 && (
           <Lottieanimacion alto="300" ancho="300" animacion={vacio} />
         )}
         <TableCategory
-          data={data}
+          data={queryCategories.data}
           SetopenRegistro={SetopenRegistro}
           setdataSelect={setdataSelect}
           setAccion={setAccion}
