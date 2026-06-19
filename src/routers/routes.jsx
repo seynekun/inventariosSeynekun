@@ -16,6 +16,7 @@ import KardexEntradaSalida from "../components/organisms/reports/KardexEntradaSa
 import StockInventarioValorado from "../components/organisms/reports/StockInventarioValorado";
 import { Empresa } from "../pages/Company";
 import { Layout } from "../hooks/Layout";
+import ResumesProducts from "../pages/ResumesProducts";
 
 export function MyRoutes() {
   return (
@@ -94,6 +95,16 @@ export function MyRoutes() {
           <ProtectedRoute accessBy="authenticated">
             <Layout>
               <Products />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/configurar/hojasvida"
+        element={
+          <ProtectedRoute accessBy="authenticated">
+            <Layout>
+              <ResumesProducts />
             </Layout>
           </ProtectedRoute>
         }

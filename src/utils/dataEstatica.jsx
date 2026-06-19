@@ -89,6 +89,12 @@ export const DataModulosConfiguracion = [
     icono: "https://i.ibb.co/1qsbCRb/piensa-fuera-de-la-caja.png",
     link: "/configurar/marca",
   },
+  {
+    title: "Hojas de Vida",
+    subtitle: "gestiona hoja de vida los equipos",
+    icono: "https://i.ibb.co/TMYXRdhT/Hojasvida.png",
+    link: "/configurar/hojasvida",
+  },
 ];
 //tipo usuario
 export const TipouserData = [
