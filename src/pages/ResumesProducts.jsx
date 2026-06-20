@@ -26,7 +26,6 @@ export default function ResumesProducts() {
   if (statePermiso == false) {
     return <AdblockPage state={statePermiso} />;
   }
-  console.log(queryResumeProducts.data);
   if (queryResumeProducts.data)
     return <ResumeProductsTemplate queryResumeProducts={queryResumeProducts} />;
 }

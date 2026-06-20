@@ -7,6 +7,7 @@ import { BiUserCircle } from "react-icons/bi";
 import { RiSettings3Line } from "react-icons/ri";
 import { MdExitToApp } from "react-icons/md";
 import { FcPicture } from "react-icons/fc";
+import { FaEye } from "react-icons/fa";
 import { CgMathPlus } from "react-icons/cg";
 import { TbBrandSupabase } from "react-icons/tb";
 import { FaReact } from "react-icons/fa";
@@ -109,4 +110,5 @@ export const v = {
   iconoprev: GrFormPrevious,
   icononext: GrCaretNext,
   iconotodos: MdOutlineBorderAll,
+  iconoVisualizar: FaEye,
 };

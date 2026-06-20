@@ -7,8 +7,8 @@ import { Title } from "../atoms/Title";
 import { v } from "../../styles/variables";
 import { Lottieanimacion } from "../molecules/Lottieanimacion";
 import vacio from "../../assets/vacio.json";
-import { RegisterProducts } from "../organisms/forms/RegisterProducts";
 import { TableResumeProducts } from "../organisms/tables/TableResumeProducts";
+import { RegisterResumeProduct } from "../organisms/forms/RegisterResumeProduct";
 
 export const ResumeProductsTemplate = ({ queryResumeProducts }) => {
   const [state, setState] = useState(false);
@@ -24,7 +24,7 @@ export const ResumeProductsTemplate = ({ queryResumeProducts }) => {
   return (
     <Container>
       {openRegistro && (
-        <RegisterProducts
+        <RegisterResumeProduct
           dataSelect={dataSelect}
           accion={accion}
           onClose={() => SetopenRegistro(!openRegistro)}

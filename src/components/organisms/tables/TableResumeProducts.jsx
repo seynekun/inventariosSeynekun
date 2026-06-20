@@ -69,7 +69,6 @@ export const TableResumeProducts = ({
           <span>{info.getValue()}</span>
         </td>
       ),
-
       enableColumnFilter: false,
     },
     {
@@ -137,6 +136,7 @@ export const TableResumeProducts = ({
             funcionEditar={() => editar(info.row.original)}
             funcionEliminar={() => eliminar(info.row.original.id)}
             stateeditar={true}
+            stateView={true}
           />
         </td>
       ),
@@ -146,31 +146,22 @@ export const TableResumeProducts = ({
 
   const table = useReactTable({
     data,
-
     columns,
-
     state: {
       columnFilters,
       pagination,
     },
-
     onColumnFiltersChange: setColumnFilters,
-
     onPaginationChange: setPagination,
-
     autoResetPageIndex: false,
-
     getCoreRowModel: getCoreRowModel(),
-
     getFilteredRowModel: getFilteredRowModel(),
-
     getSortedRowModel: getSortedRowModel(),
-
     getPaginationRowModel: getPaginationRowModel(),
   });
   const handleFilter = useCallback(
     (value) => {
-      table.getColumn("descripcion")?.setFilterValue(value);
+      table.getColumn("nombre")?.setFilterValue(value);
       setPagination((prev) =>
         prev.pageIndex === 0
           ? prev
@@ -186,7 +177,7 @@ export const TableResumeProducts = ({
     <Container>
       <section className="area2">
         <Buscador
-          value={table.getColumn("descripcion")?.getFilterValue() ?? ""}
+          value={table.getColumn("nombre")?.getFilterValue() ?? ""}
           onChange={handleFilter}
           placeholder="Buscar"
         />
