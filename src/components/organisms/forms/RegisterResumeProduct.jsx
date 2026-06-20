@@ -11,10 +11,8 @@ import { ListaGenerica } from "../../molecules/ListaGenerica";
 import { Device } from "../../../styles/breackpoints";
 import { useQueryClient } from "@tanstack/react-query";
 import { BuscadorItem } from "../BuscadorItem";
-import { Selector } from "../Selector";
-import { ContainerSelector } from "../../atoms/ContainerSelector";
-import { CardProductSelect } from "../../molecules/CardProductSelect";
 import { CardProductResume } from "../../molecules/CardProductResume";
+import { useResumeProductsStore } from "../../../store/useResumeProductsStore";
 
 export function RegisterResumeProduct({ onClose, dataSelect, accion }) {
   const queryClient = useQueryClient();
@@ -28,7 +26,8 @@ export function RegisterResumeProduct({ onClose, dataSelect, accion }) {
     (state) => state.productosItemSelect,
   );
 
-  const { insertproducts, updateproducts } = useProductsStore();
+  const { insertresumeproducts, updateresumeproducts } =
+    useResumeProductsStore();
   const dataCompany = useCompanyStore((state) => state.dataCompany);
   const brandItemSelect = useBrandStore((state) => state.brandItemSelect);
   const {
@@ -55,29 +54,23 @@ export function RegisterResumeProduct({ onClose, dataSelect, accion }) {
         estadoequipo: data.estadoequipo,
         codigo: data.codigo,
       };
-      await updateproducts(p);
+      await insertresumeproducts(p);
       onClose();
     } else {
       const p = {
-        _descripcion: data.descripcion,
-        _idmarca: brandItemSelect.id,
-        _stock: parseFloat(data.stock),
-        _preciocompra: parseFloat(data.preciocompra),
-        _ubicacion: data.ubicacion,
-        _fechacompra: data.fecha_compra,
-        _proveedor: data.proveedor,
-        _meses_dep: data.meses_dep,
-        _responsable: data.responsable,
-        _id_empresa: dataCompany.id,
-        _vidautil: data.vidautil,
-        _estadoequipo: data.estadoequipo,
-        _codigo: data.codigo,
+        _idproducto: productosItemSelect.id,
+        _especificaciones: data.especificaciones,
+        _modelo: data.modelo,
+        _serial: data.serial,
+        _partesprincipales: data.serial,
+        _funcion: data.funcion,
+        _idempresa: dataCompany.id,
       };
-      await insertproducts(p);
+      await insertresumeproducts(p);
       onClose();
     }
     queryClient.invalidateQueries({
-      queryKey: ["mostrar productos", dataCompany.id],
+      queryKey: ["mostrar hojas de vida", dataCompany?.id],
     });
   }
   // useEffect(() => {
@@ -105,8 +98,8 @@ export function RegisterResumeProduct({ onClose, dataSelect, accion }) {
           <section>
             <h1>
               {accion == "Editar"
-                ? "Editar Producto"
-                : "Registrar nuevo Producto"}
+                ? "Editar Datos Hoja de Vida"
+                : "Registrar Hoja de Vida"}
             </h1>
           </section>
           <section>
@@ -194,204 +187,71 @@ export function RegisterResumeProduct({ onClose, dataSelect, accion }) {
                 )}
               </InputText>
             </article>
-            <article>
-              <InputText icono={<v.iconopreciocompra />}>
-                <input
-                  step="0.01"
-                  className="form__field"
-                  defaultValue={dataSelect.fecha_compra}
-                  type="text"
-                  placeholder=""
-                  {...register("fecha_compra", {
-                    required: true,
-                  })}
-                />
-                <label className="form__label">Fecha compra</label>
-
-                {errors.fecha_compra?.type === "required" && (
-                  <p>Campo requerido</p>
-                )}
-              </InputText>
-            </article>
-
-            <article>
-              <InputText icono={<v.icononombre />}>
-                <input
-                  className="form__field"
-                  defaultValue={dataSelect.descripcion}
-                  type="text"
-                  placeholder=""
-                  {...register("descripcion", {
-                    required: true,
-                  })}
-                />
-                <label className="form__label">descripcion</label>
-                {errors.descripcion?.type === "required" && (
-                  <p>Campo requerido</p>
-                )}
-              </InputText>
-            </article>
-
-            <article>
-              <InputText icono={<v.iconostock />}>
-                <input
-                  className="form__field"
-                  type="number"
-                  step="0.01"
-                  placeholder=""
-                  defaultValue={dataSelect.stock}
-                  {...register("stock", {
-                    required: true,
-                  })}
-                />
-                <label className="form__label">Stock</label>
-              </InputText>
-            </article>
-            <article>
-              <InputText icono={<v.iconopreciocompra />}>
-                <input
-                  step="0.01"
-                  className="form__field"
-                  defaultValue={dataSelect.preciocompra}
-                  type="number"
-                  placeholder=""
-                  {...register("preciocompra", {
-                    required: true,
-                  })}
-                />
-                <label className="form__label">Precio de compra</label>
-
-                {errors.preciocompra?.type === "required" && (
-                  <p>Campo requerido</p>
-                )}
-              </InputText>
-            </article>
-            <article>
-              <InputText icono={<v.iconocheck />}>
-                <input
-                  type="text"
-                  className="form__field"
-                  defaultValue={dataSelect.estadoequipo}
-                  placeholder=""
-                  {...register("estadoequipo", {
-                    required: true,
-                  })}
-                />
-                <label className="form__label">Estado del Equipo</label>
-                {errors.estadoequipo?.type === "required" && (
-                  <p>Campo requerido</p>
-                )}
-              </InputText>
-            </article>
-            <article>
-              <InputText icono={<v.iconocheck />}>
-                <input
-                  type="number"
-                  step="0.1"
-                  className="form__field"
-                  defaultValue={dataSelect.vidautil}
-                  placeholder=""
-                  {...register("vidautil", {
-                    required: true,
-                  })}
-                />
-                <label className="form__label">Vida Util del Equipo</label>
-                {errors.vidautil?.type === "required" && <p>Campo requerido</p>}
-              </InputText>
-            </article>
           </section>
 
           <section className="seccion2">
             <article>
-              <InputText icono={<v.iconocheck />}>
+              <InputText icono={<v.icononombre />}>
                 <input
-                  type="text"
                   className="form__field"
+                  defaultValue={dataSelect.modelo}
+                  type="text"
                   placeholder=""
-                  {...register("codigo", {
+                  {...register("modelo", {
                     required: true,
                   })}
-                  defaultValue={dataSelect.codigo}
                 />
-                <label className="form__label">Código del Equipo</label>
-                {errors.codigo?.type === "required" && <p>Campo requerido</p>}
+                <label className="form__label">Modelo</label>
+                {errors.modelo?.type === "required" && <p>Campo requerido</p>}
               </InputText>
             </article>
             <article>
-              <InputText icono={<v.iconopreciocompra />}>
+              <InputText icono={<v.icononombre />}>
                 <input
-                  step="0.01"
                   className="form__field"
-                  defaultValue={dataSelect.ubicacion}
+                  defaultValue={dataSelect.serial}
                   type="text"
                   placeholder=""
-                  {...register("ubicacion", {
+                  {...register("serial", {
                     required: true,
                   })}
                 />
-                <label className="form__label">Ubicación</label>
-
-                {errors.ubicacion?.type === "required" && (
-                  <p>Campo requerido</p>
-                )}
+                <label className="form__label">Serial</label>
+                {errors.serial?.type === "required" && <p>Campo requerido</p>}
               </InputText>
             </article>
-
             <article>
-              <InputText icono={<v.iconoprecioventa />}>
-                <input
-                  step="0.01"
-                  className="form__field"
-                  defaultValue={dataSelect.proveedor}
-                  type="text"
+              <InputText icono={<v.icononombre />}>
+                <textarea
+                  className={`form__field `}
+                  defaultValue={dataSelect?.partesprincipales || ""}
                   placeholder=""
-                  {...register("proveedor", {
+                  {...register("partesprincipales", {
                     required: true,
                   })}
                 />
-                <label className="form__label">Proveedor</label>
+                <label className="form__label">
+                  Partes Principales del Equipo
+                </label>
 
-                {errors.proveedor?.type === "required" && (
+                {errors.partesprincipales?.type === "required" && (
                   <p>Campo requerido</p>
                 )}
               </InputText>
             </article>
             <article>
-              <InputText icono={<v.iconoprecioventa />}>
-                <input
-                  step="0.01"
-                  name="meses_dep"
-                  className="form__field"
-                  defaultValue={dataSelect.meses_dep}
-                  type="text"
-                  placeholder=""
-                  {...register("meses_dep", {
+              <InputText icono={<v.icononombre />}>
+                <textarea
+                  className={`form__field `}
+                  defaultValue={dataSelect?.funcion || ""}
+                  placeholder=" "
+                  {...register("funcion", {
                     required: true,
                   })}
                 />
-                <label className="form__label">Meses de venta</label>
+                <label className="form__label">Función del Equipo</label>
 
-                {errors.meses_dep?.type === "required" && (
-                  <p>Campo requerido</p>
-                )}
-              </InputText>
-            </article>
-            <article>
-              <InputText icono={<v.iconoprecioventa />}>
-                <input
-                  className="form__field"
-                  defaultValue={dataSelect.responsable}
-                  type="text"
-                  placeholder=""
-                  {...register("responsable", {
-                    required: true,
-                  })}
-                />
-                <label className="form__label">Responsable</label>
-
-                {errors.responsable?.type === "required" && (
-                  <p>Campo requerido</p>
-                )}
+                {errors.funcion?.type === "required" && <p>Campo requerido</p>}
               </InputText>
             </article>
           </section>
