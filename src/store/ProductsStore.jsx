@@ -23,7 +23,6 @@ export const useProductsStore = create((set) => ({
   },
 
   selectproducts: (p) => {
-    console.log(p);
     set({ productosItemSelect: p });
   },
   insertproducts: async (p) => {

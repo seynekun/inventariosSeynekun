@@ -5,19 +5,18 @@ import { InputText } from "./InputText";
 import { Btnsave } from "../../molecules/BtnSave";
 import { useCompanyStore } from "../../../store/companyStore";
 import { useProductsStore } from "../../../store/ProductsStore";
-import { useBrandStore } from "../../../store/BrandStore";
 import { useEffect, useState } from "react";
 import { ListaGenerica } from "../../molecules/ListaGenerica";
 import { Device } from "../../../styles/breackpoints";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { BuscadorItem } from "../BuscadorItem";
 import { CardProductResume } from "../../molecules/CardProductResume";
 import { useResumeProductsStore } from "../../../store/useResumeProductsStore";
+import { ShowProductById } from "../../../supabase/products.actions";
 
 export function RegisterResumeProduct({ onClose, dataSelect, accion }) {
   const queryClient = useQueryClient();
   const [stateListaProd, SetstateListaProd] = useState(false);
-  const [stateBrand, setStateBrand] = useState(false);
 
   const setBuscador = useProductsStore((state) => state.setBuscador);
   const dataproductos = useProductsStore((state) => state.dataProducts);
@@ -29,32 +28,32 @@ export function RegisterResumeProduct({ onClose, dataSelect, accion }) {
   const { insertresumeproducts, updateresumeproducts } =
     useResumeProductsStore();
   const dataCompany = useCompanyStore((state) => state.dataCompany);
-  const brandItemSelect = useBrandStore((state) => state.brandItemSelect);
   const {
     register,
     formState: { errors },
     handleSubmit,
   } = useForm();
-
+  const { data } = useQuery({
+    queryKey: ["consultar producto", dataSelect?.id_producto],
+    queryFn: () =>
+      ShowProductById({
+        _id_producto: dataSelect?.id_producto,
+      }),
+    enabled: dataSelect?.id_producto != null,
+  });
   async function insertar(data) {
     if (accion === "Editar") {
       const p = {
         id: dataSelect.id,
-        descripcion: data.descripcion,
-        idmarca: brandItemSelect.id,
-        stock: parseFloat(data.stock),
-        preciocompra: parseFloat(data.preciocompra),
-        ubicacion: data.ubicacion,
-        fecha_compra: data.fecha_compra,
-        proveedor: data.proveedor,
-        meses_dep: data.meses_dep,
-        responsable: data.responsable,
+        id_producto: productosItemSelect.id,
+        especificaciones: data.especificaciones,
+        modelo: data.modelo,
+        serial: data.serial,
+        partesprincipales: data.partesprincipales,
+        funcion: data.funcion,
         id_empresa: dataCompany.id,
-        vidautil: data.vidautil,
-        estadoequipo: data.estadoequipo,
-        codigo: data.codigo,
       };
-      await insertresumeproducts(p);
+      await updateresumeproducts(p);
       onClose();
     } else {
       const p = {
@@ -62,7 +61,7 @@ export function RegisterResumeProduct({ onClose, dataSelect, accion }) {
         _especificaciones: data.especificaciones,
         _modelo: data.modelo,
         _serial: data.serial,
-        _partesprincipales: data.serial,
+        _partesprincipales: data.partesprincipales,
         _funcion: data.funcion,
         _idempresa: dataCompany.id,
       };
@@ -73,24 +72,11 @@ export function RegisterResumeProduct({ onClose, dataSelect, accion }) {
       queryKey: ["mostrar hojas de vida", dataCompany?.id],
     });
   }
-  // useEffect(() => {
-  //   if (accion === "Editar") {
-  //     selectBrand({ id: dataSelect.idmarca, descripcion: dataSelect.marca });
-  //     selectCategory({
-  //       id: dataSelect.id_categoria,
-  //       descripcion: dataSelect.categoria,
-  //     });
-  //   }
-  // }, [
-  //   accion,
-  //   dataSelect,
-  //   dataSelect.categoria,
-  //   dataSelect.id_categoria,
-  //   dataSelect.idmarca,
-  //   dataSelect.marca,
-  //   selectBrand,
-  //   selectCategory,
-  // ]);
+  useEffect(() => {
+    if (accion === "Editar") {
+      selectproducts(data);
+    }
+  }, [accion, data, selectproducts]);
   return (
     <Container>
       <div className="sub-contenedor">
@@ -340,11 +326,11 @@ const Container = styled.div`
     textarea.form__field {
       width: 100%;
       min-height: 100px;
-      resize: vertical;
       padding: 20px 10px 5px 10px;
       font-family: inherit;
-      line-height: 1.5;
       box-sizing: border-box;
+      resize: vertical;
+      line-height: 1.5;
     }
   }
 `;

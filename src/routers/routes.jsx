@@ -17,6 +17,7 @@ import StockInventarioValorado from "../components/organisms/reports/StockInvent
 import { Empresa } from "../pages/Company";
 import { Layout } from "../hooks/Layout";
 import ResumesProducts from "../pages/ResumesProducts";
+import ResumeViewProduct from "../pages/ResumeViewProduct";
 
 export function MyRoutes() {
   return (
@@ -29,96 +30,29 @@ export function MyRoutes() {
           </ProtectedRoute>
         }
       />
+
       <Route
-        path="/"
         element={
           <ProtectedRoute accessBy="authenticated">
-            <Layout>
-              <Home />
-            </Layout>
+            <Layout />
           </ProtectedRoute>
         }
-      />
-      <Route
-        path="/configurar/personal"
-        element={
-          <ProtectedRoute accessBy="authenticated">
-            <Layout>
-              <Users />
-            </Layout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/configurar/empresa"
-        element={
-          <ProtectedRoute accessBy="authenticated">
-            <Layout>
-              <Empresa />
-            </Layout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/configurar"
-        element={
-          <ProtectedRoute accessBy="authenticated">
-            <Layout>
-              <Configuration />
-            </Layout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/configurar/marca"
-        element={
-          <ProtectedRoute accessBy="authenticated">
-            <Layout>
-              <Branding />
-            </Layout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/configurar/categorias"
-        element={
-          <ProtectedRoute accessBy="authenticated">
-            <Layout>
-              <Category />
-            </Layout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/configurar/productos"
-        element={
-          <ProtectedRoute accessBy="authenticated">
-            <Layout>
-              <Products />
-            </Layout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/configurar/hojasvida"
-        element={
-          <ProtectedRoute accessBy="authenticated">
-            <Layout>
-              <ResumesProducts />
-            </Layout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/kardex"
-        element={
-          <ProtectedRoute accessBy="authenticated">
-            <Layout>
-              <Kardex />
-            </Layout>
-          </ProtectedRoute>
-        }
-      />
+      >
+        <Route path="/" element={<Home />} />
+        <Route path="/configurar" element={<Configuration />} />
+        <Route path="/configurar/personal" element={<Users />} />
+        <Route path="/configurar/empresa" element={<Empresa />} />
+        <Route path="/configurar/marca" element={<Branding />} />
+        <Route path="/configurar/categorias" element={<Category />} />
+        <Route path="/configurar/productos" element={<Products />} />
+        <Route path="/configurar/hojasvida" element={<ResumesProducts />} />
+        <Route
+          path="/configurar/hojasvida/:id/view"
+          element={<ResumeViewProduct />}
+        />
+        <Route path="/kardex" element={<Kardex />} />
+        <Route path="/reportes" element={<Reports />} />
+      </Route>
 
       <Route
         path="/reportes"

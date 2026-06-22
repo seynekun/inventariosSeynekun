@@ -6,17 +6,11 @@ export function ContentAccionesTabla({
   funcionEliminar,
   stateeditar,
   stateView,
+  children,
 }) {
   return (
     <Container>
-      {stateView && (
-        <AccionTabla
-          funcion={funcionEditar}
-          fontSize="22px"
-          color="#276CF5"
-          icono={<v.iconoVisualizar />}
-        />
-      )}
+      {stateView && children}
       {stateeditar && (
         <AccionTabla
           funcion={funcionEditar}

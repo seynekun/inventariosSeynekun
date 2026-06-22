@@ -4,6 +4,7 @@ import { useUsersStore } from "../store/UsersStore";
 import useProducts from "../hooks/useProducts";
 import { useProductsStore } from "../store/ProductsStore";
 import useResumeProducts from "../hooks/useResumeProducts";
+import { SpinnerLoading } from "../components/molecules/SpinnerLoading";
 import { ResumeProductsTemplate } from "../components/templates/ResumeProductsTemplate";
 
 export default function ResumesProducts() {
@@ -25,6 +26,12 @@ export default function ResumesProducts() {
 
   if (statePermiso == false) {
     return <AdblockPage state={statePermiso} />;
+  }
+  if (queryResumeProducts.isLoading) {
+    return <SpinnerLoading />;
+  }
+  if (queryResumeProducts.error) {
+    return <span>Error...</span>;
   }
   if (queryResumeProducts.data)
     return <ResumeProductsTemplate queryResumeProducts={queryResumeProducts} />;

@@ -16,6 +16,7 @@ import { useState } from "react";
 import { Buscador } from "../Buscador";
 import { useCallback } from "react";
 import { useResumeProductsStore } from "../../../store/useResumeProductsStore";
+import { Link } from "react-router-dom";
 
 export const TableResumeProducts = ({
   data,
@@ -131,14 +132,23 @@ export const TableResumeProducts = ({
       header: "",
       enableSorting: false,
       cell: (info) => (
-        <td data-title="Acciones" className="ContentCell">
-          <ContentAccionesTabla
-            funcionEditar={() => editar(info.row.original)}
-            funcionEliminar={() => eliminar(info.row.original.id)}
-            stateeditar={true}
-            stateView={true}
-          />
-        </td>
+        <>
+          <td data-title="Acciones" className="ContentCell">
+            <ContentAccionesTabla
+              funcionEditar={() => editar(info.row.original)}
+              funcionEliminar={() => eliminar(info.row.original.id)}
+              stateeditar={true}
+              stateView={true}
+            >
+              <Link
+                className="link-nav"
+                to={`/configurar/hojasvida/${info.row.original.id}/view`}
+              >
+                <v.iconoVisualizar color="#276CF5" />
+              </Link>
+            </ContentAccionesTabla>
+          </td>
+        </>
       ),
       enableColumnFilter: false,
     },
@@ -298,6 +308,11 @@ const Container = styled.div`
         display: table-row;
       }
     }
+    .link-nav {
+      font-size: 22px;
+      cursor: pointer;
+    }
+
     .imagen {
       width: 50px;
       height: 50px;

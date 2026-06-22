@@ -8,13 +8,15 @@ import styled from "styled-components";
 import { Sidebar } from "../components/organisms/sidebar/Sidebar";
 import { useState } from "react";
 import { MenuHambur } from "../components/organisms/MenuHambur";
+import { Outlet } from "react-router-dom";
 
-export const Layout = ({ children }) => {
+export const Layout = () => {
   const showUsers = useUsersStore((state) => state.showUsers);
   const idUsuario = useUsersStore((state) => state.idUsuario);
   const showPermisos = useUsersStore((state) => state.showPermisos);
   const showCompany = useCompanyStore((state) => state.showCompany);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
   const {
     data: dataUsers,
     isLoading,
@@ -54,7 +56,9 @@ export const Layout = ({ children }) => {
         <MenuHambur />
       </div>
 
-      <Containerbody>{children}</Containerbody>
+      <Containerbody>
+        <Outlet />
+      </Containerbody>
     </Container>
   );
 };

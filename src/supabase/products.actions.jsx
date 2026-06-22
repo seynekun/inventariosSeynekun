@@ -16,6 +16,10 @@ export async function ShowProducts(p) {
   const { data } = await supabase.rpc("mostrarproductos", p);
   return data;
 }
+export async function ShowProductById(p) {
+  const { data } = await supabase.rpc("mostrarproductosporid", p).single();
+  return data;
+}
 
 export async function DeleteProducts(p) {
   const { error } = await supabase.from("productos").delete().eq("id", p.id);
