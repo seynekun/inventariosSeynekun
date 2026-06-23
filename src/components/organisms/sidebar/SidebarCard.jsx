@@ -3,7 +3,7 @@ import { Btnsave } from "../../molecules/BtnSave";
 import { v } from "../../../styles/variables";
 import { useAuthStore } from "../../../store/AuthStore";
 export function SidebarCard() {
-  const { signout } = useAuthStore();
+  const { signOut } = useAuthStore();
   return (
     <Container>
       <span className="icon">{<v.iconoayuda />}</span>
@@ -12,7 +12,7 @@ export function SidebarCard() {
         <div className="circle2"></div>
         <h3>Cerrar sesión</h3>
         <div className="contentBtn">
-          <Btnsave titulo="Cerrar ..." bgcolor="#f8f2fd" funcion={signout} />
+          <Btnsave titulo="Cerrar ..." bgcolor="#f8f2fd" funcion={signOut} />
         </div>
       </div>
     </Container>

@@ -68,7 +68,7 @@ export const LoginTemplate = () => {
                   required: true,
                 })}
               />
-              <label className="form__label">email</label>
+              <label className="form__label">Email</label>
               {errors.correo?.type === "required" && <p>Campo requerido</p>}
             </InputText>
             <InputText icono={<v.iconopass />}>
@@ -80,7 +80,7 @@ export const LoginTemplate = () => {
                   required: true,
                 })}
               />
-              <label className="form__label">pass</label>
+              <label className="form__label">Contraseña</label>
               {errors.pass?.type === "required" && <p>Campo requerido</p>}
             </InputText>
             <ContainerBtn>
