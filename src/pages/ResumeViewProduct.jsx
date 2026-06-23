@@ -10,6 +10,8 @@ import { GetMaintenanceByHvida } from "../supabase/maintenance.actions";
 import { MaintenanceList } from "../components/organisms/MaintenanceList";
 import BtnShared from "../components/molecules/BtnShared";
 import { v } from "../styles/variables";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import { HojaVidaPDF } from "../components/organisms/reports/HojaVidaPDF";
 export default function ResumeViewProduct() {
   const [state, setState] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
@@ -62,6 +64,21 @@ export default function ResumeViewProduct() {
               <BtnMantto onClick={() => setModalOpen(true)}>
                 🔧 Registrar mantenimiento
               </BtnMantto>
+              <PDFDownloadLink
+                document={
+                  <HojaVidaPDF
+                    equipo={data}
+                    mantenimientos={mantenimientos || []}
+                  />
+                }
+                fileName={`HV-${data.cod_inventario}-${data.nombre}.pdf`}
+              >
+                {({ loading }) => (
+                  <BtnPDF disabled={loading}>
+                    {loading ? "⏳ Generando..." : "📄PDF"}
+                  </BtnPDF>
+                )}
+              </PDFDownloadLink>
               <StatusArea>
                 <StatusDot>Activo</StatusDot>
                 <UbicacionLabel>{data.ubicacion}</UbicacionLabel>
@@ -364,4 +381,26 @@ const EmptyMsg = styled.p`
   color: ${({ theme }) => theme.textTertiary || "#aaa"};
   text-align: center;
   padding: 1.5rem 0;
+`;
+const BtnPDF = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+  &:hover {
+    background: rgba(255, 255, 255, 0.18);
+  }
+  &:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
 `;
