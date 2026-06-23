@@ -51,33 +51,28 @@ export function MyRoutes() {
           element={<ResumeViewProduct />}
         />
         <Route path="/kardex" element={<Kardex />} />
-        <Route path="/reportes" element={<Reports />} />
-      </Route>
+        <Route path="/reportes" element={<Reports />}>
+          <Route index element={<StockActualTodos />} />
 
-      <Route
-        path="/reportes"
-        element={
-          <ProtectedRoute accessBy="authenticated">
-            <Layout>
-              <Reports />
-            </Layout>
-          </ProtectedRoute>
-        }
-      >
-        <Route path="stock-actual-todos" element={<StockActualTodos />} />
-        <Route
-          path="stock-actual-por-producto"
-          element={<StockActualPorProducto />}
-        />
-        <Route path="stock-bajo-minimo" element={<StockBajoMinimo />} />
-        <Route
-          path="kardex-entradas-salidas"
-          element={<KardexEntradaSalida />}
-        />
-        <Route
-          path="inventario-valorado"
-          element={<StockInventarioValorado />}
-        />
+          <Route path="stock-actual-todos" element={<StockActualTodos />} />
+
+          <Route
+            path="stock-actual-por-producto"
+            element={<StockActualPorProducto />}
+          />
+
+          <Route path="stock-bajo-minimo" element={<StockBajoMinimo />} />
+
+          <Route
+            path="kardex-entradas-salidas"
+            element={<KardexEntradaSalida />}
+          />
+
+          <Route
+            path="inventario-valorado"
+            element={<StockInventarioValorado />}
+          />
+        </Route>
       </Route>
     </Routes>
   );

@@ -5,6 +5,7 @@ import {
   DeleteFacturaRow,
   DeleteMaintenance,
 } from "../../supabase/maintenance.actions";
+import Spinner from "../atoms/spinner/Spinner";
 
 export function MaintenanceList({ mantenimientos, loading, hvId }) {
   const queryClient = useQueryClient();
@@ -48,9 +49,7 @@ export function MaintenanceList({ mantenimientos, loading, hvId }) {
     });
   };
 
-  if (loading) return null;
-  if (!mantenimientos?.length)
-    return <EmptyMsg>Sin mantenimientos registrados.</EmptyMsg>;
+  if (loading) return <Spinner />;
 
   return (
     <ListWrap>
@@ -289,11 +288,4 @@ const DeleteRowBtn = styled.button`
   &:hover {
     color: #e85d1f;
   }
-`;
-
-const EmptyMsg = styled.p`
-  font-size: 13px;
-  color: ${({ theme }) => theme.textTertiary || "#aaa"};
-  text-align: center;
-  padding: 1.5rem 0;
 `;

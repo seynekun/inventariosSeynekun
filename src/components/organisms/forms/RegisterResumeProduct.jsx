@@ -52,6 +52,7 @@ export function RegisterResumeProduct({ onClose, dataSelect, accion }) {
         partesprincipales: data.partesprincipales,
         funcion: data.funcion,
         id_empresa: dataCompany.id,
+        observaciones: data.observaciones,
       };
       await updateresumeproducts(p);
       onClose();
@@ -64,6 +65,7 @@ export function RegisterResumeProduct({ onClose, dataSelect, accion }) {
         _partesprincipales: data.partesprincipales,
         _funcion: data.funcion,
         _idempresa: dataCompany.id,
+        _observaciones: data.observaciones,
       };
       await insertresumeproducts(p);
       onClose();
@@ -173,6 +175,23 @@ export function RegisterResumeProduct({ onClose, dataSelect, accion }) {
                 )}
               </InputText>
             </article>
+            <article>
+              <InputText icono={<v.icononombre />}>
+                <input
+                  className="form__field"
+                  defaultValue={dataSelect.observaciones}
+                  type="text"
+                  placeholder=""
+                  {...register("observaciones", {
+                    required: true,
+                  })}
+                />
+                <label className="form__label">Observaciones Generales</label>
+                {errors.observaciones?.type === "required" && (
+                  <p>Campo requerido</p>
+                )}
+              </InputText>
+            </article>
           </section>
 
           <section className="seccion2">
@@ -236,7 +255,6 @@ export function RegisterResumeProduct({ onClose, dataSelect, accion }) {
                   })}
                 />
                 <label className="form__label">Función del Equipo</label>
-
                 {errors.funcion?.type === "required" && <p>Campo requerido</p>}
               </InputText>
             </article>

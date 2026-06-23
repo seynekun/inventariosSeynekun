@@ -17,9 +17,13 @@ import { ContentAccionesTabla } from "../ContentAccionesTabla";
 import { useState } from "react";
 import { Buscador } from "../Buscador";
 import { useCallback } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { useCompanyStore } from "../../../store/companyStore";
 
 export const TableKardex = ({ data }) => {
   const deleteKardex = useKardexStore((state) => state.deleteKardex);
+  const dataCompany = useCompanyStore((state) => state.dataCompany);
+  const queryClient = useQueryClient();
   const [globalFilter, setGlobalFilter] = useState("");
   const [pagination, setPagination] = useState({
     pageIndex: 0,
@@ -57,6 +61,14 @@ export const TableKardex = ({ data }) => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         await deleteKardex({ id: p.id });
+        queryClient.invalidateQueries({
+          queryKey: [
+            "mostrar productos",
+            {
+              id_empresa: dataCompany.id,
+            },
+          ],
+        });
       }
     });
   };
@@ -254,12 +266,7 @@ Buscar producto o detalle
           ))}
         </tbody>
       </table>
-      <Paginated
-        table={table}
-        irinicio={() => table.setPageIndex(0)}
-        pagina={table.getState().pagination.pageIndex + 1}
-        maximo={table.getPageCount()}
-      />
+      <Paginated table={table} />
     </Container>
   );
 };

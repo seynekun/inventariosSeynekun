@@ -1,7 +1,7 @@
 import { CiPalette } from "react-icons/ci";
 import { BsEmojiLaughing } from "react-icons/bs";
 import { RiDeleteBin2Line, RiEditLine } from "react-icons/ri";
-import { IoIosArrowDown } from "react-icons/io";
+import { IoIosArrowBack, IoIosArrowDown } from "react-icons/io";
 import { RiVipCrownFill } from "react-icons/ri";
 import { BiUserCircle } from "react-icons/bi";
 import { RiSettings3Line } from "react-icons/ri";
@@ -39,6 +39,7 @@ import { TbBrandBitbucket } from "react-icons/tb";
 import { MdOutlineCategory } from "react-icons/md";
 import { FaBuilding } from "react-icons/fa";
 import { TbReportAnalytics } from "react-icons/tb";
+import { IoMdReturnLeft } from "react-icons/io";
 export const v = {
   iconoreportes: TbReportAnalytics,
   iconoempresa: FaBuilding,
@@ -111,4 +112,6 @@ export const v = {
   icononext: GrCaretNext,
   iconotodos: MdOutlineBorderAll,
   iconoVisualizar: FaEye,
+  iconoVolver: IoMdReturnLeft,
+  iconoflechaizquierda: IoIosArrowBack,
 };

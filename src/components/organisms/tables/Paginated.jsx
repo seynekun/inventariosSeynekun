@@ -1,39 +1,33 @@
 import styled from "styled-components";
 import { v } from "../../../styles/variables";
+import BtnShared from "../../molecules/BtnShared";
 
-export function Paginated({ table, pagina, maximo, irinicio }) {
+export function Paginated({ table }) {
   return (
     <Container>
-      {/* Botón Ir al inicio */}
-      <button
-        onClick={() => irinicio()}
+      <BtnShared
+        funcion={() => table.setPageIndex(0)}
         disabled={!table.getCanPreviousPage()}
         title="Primera página"
-      >
-        <span className="iconos">{<v.iconotodos />}</span>
-      </button>
-
-      {/* Botón Página Anterior */}
-      <button
+        bgcolor="#F3D20C"
+        icono={<v.iconotodos />}
+      />
+      <BtnShared
         disabled={!table.getCanPreviousPage()}
-        onClick={() => table.previousPage()}
-        title="Página anterior"
-      >
-        <span className="iconos izquierda">{<v.iconoflechaderecha />}</span>
-      </button>
+        funcion={() => table.previousPage()}
+        bgcolor="#F3D20C"
+        icono={<v.iconoflechaizquierda />}
+      />
 
-      {/* Indicador de página actual */}
-      <span>{pagina}</span>
-      <p> de {maximo}</p>
+      <span>{table.getState().pagination.pageIndex + 1}</span>
+      <p> de {table.getPageCount()} </p>
 
-      {/* Botón Página Siguiente */}
-      <button
+      <BtnShared
         disabled={!table.getCanNextPage()}
-        onClick={() => table.nextPage()}
-        title="Página siguiente"
-      >
-        <span className="iconos">{<v.iconoflechaderecha />}</span>
-      </button>
+        funcion={() => table.nextPage()}
+        bgcolor="#F3D20C"
+        icono={<v.iconoflechaderecha />}
+      />
     </Container>
   );
 }

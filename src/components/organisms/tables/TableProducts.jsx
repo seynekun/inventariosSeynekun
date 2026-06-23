@@ -18,6 +18,8 @@ import { Device } from "../../../styles/breackpoints";
 import { formatCurrency } from "../../../utils";
 import { Buscador } from "../Buscador";
 import { useCallback } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { useCompanyStore } from "../../../store/companyStore";
 
 export const TableProducts = ({
   data,
@@ -25,7 +27,9 @@ export const TableProducts = ({
   setdataSelect,
   setAccion,
 }) => {
+  const queryClient = useQueryClient();
   const deleteproducts = useProductsStore((state) => state.deleteproducts);
+  const dataCompany = useCompanyStore((state) => state.dataCompany);
   const [columnFilters, setColumnFilters] = useState([]);
   const [pagination, setPagination] = useState({
     pageIndex: 0,
@@ -44,6 +48,9 @@ export const TableProducts = ({
     }).then(async (result) => {
       if (result.isConfirmed) {
         await deleteproducts({ id: p });
+        queryClient.invalidateQueries({
+          queryKey: ["mostrar productos", dataCompany.id],
+        });
       }
     });
   }
@@ -254,12 +261,7 @@ export const TableProducts = ({
           ))}
         </tbody>
       </table>
-      <Paginated
-        table={table}
-        irinicio={() => table.setPageIndex(0)}
-        pagina={table.getState().pagination.pageIndex + 1}
-        maximo={table.getPageCount()}
-      />
+      <Paginated table={table} />
     </Container>
   );
 };

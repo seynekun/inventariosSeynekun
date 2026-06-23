@@ -2,15 +2,18 @@ import { useState } from "react";
 import { Header } from "../components/organisms/Header";
 import styled from "styled-components";
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ShowHojaVidaById } from "../supabase/resume-products.actions";
 import { SpinnerLoading } from "../components/molecules/SpinnerLoading";
 import ModalRegisterMaintenance from "../components/organisms/forms/ModalRegisterMaintenance";
 import { GetMaintenanceByHvida } from "../supabase/maintenance.actions";
 import { MaintenanceList } from "../components/organisms/MaintenanceList";
+import BtnShared from "../components/molecules/BtnShared";
+import { v } from "../styles/variables";
 export default function ResumeViewProduct() {
   const [state, setState] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const navigate = useNavigate();
   const { id: hvId } = useParams();
   const { data, isLoading, error } = useQuery({
     queryKey: ["consultar hoja vida", hvId],
@@ -18,7 +21,6 @@ export default function ResumeViewProduct() {
     enabled: !!hvId,
   });
 
-  // dentro del componente, después de la query de data:
   const { data: mantenimientos, isLoading: loadingMantto } = useQuery({
     queryKey: ["mantenimientos", hvId],
     queryFn: () => GetMaintenanceByHvida({ id_hvida: hvId }),
@@ -40,6 +42,12 @@ export default function ResumeViewProduct() {
         </header>
 
         <section className="main">
+          <BtnShared
+            funcion={() => navigate(-1)}
+            icono={<v.iconoVolver />}
+            bgcolor={v.colorPrincipal}
+            titulo="Volver"
+          />
           <BadgeLabel>📋 hoja de vida de equipo</BadgeLabel>
 
           <EquipoCard>
@@ -112,13 +120,22 @@ export default function ResumeViewProduct() {
                 <SectionTitle>Partes principales · serial ref.</SectionTitle>
                 <TextBlock>{data.partesprincipales}</TextBlock>
               </Section>
+              <Section>
+                <SectionTitle>Observaciones Generales</SectionTitle>
+                <TextBlock>{data.observaciones}</TextBlock>
+              </Section>
             </CardBody>
           </EquipoCard>
-          <MaintenanceList
-            mantenimientos={mantenimientos}
-            loading={loadingMantto}
-            hvId={hvId}
-          />
+
+          {mantenimientos?.length ? (
+            <MaintenanceList
+              mantenimientos={mantenimientos}
+              loading={loadingMantto}
+              hvId={hvId}
+            />
+          ) : (
+            <EmptyMsg>Sin mantenimientos registrados.</EmptyMsg>
+          )}
         </section>
         {modalOpen && (
           <ModalRegisterMaintenance
@@ -160,7 +177,7 @@ const BadgeLabel = styled.span`
   gap: 6px;
   background: #1a1a2e;
   color: #ff6b2b;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -253,7 +270,7 @@ const Section = styled.div`
 `;
 
 const SectionTitle = styled.p`
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 500;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -283,7 +300,7 @@ const Field = styled.div`
 `;
 
 const Label = styled.span`
-  font-size: 11px;
+  font-size: 12px;
   color: ${({ theme }) => theme.textTertiary || "#aaa"};
 `;
 
@@ -312,7 +329,7 @@ const ResponsableName = styled.p`
 
 const ResponsableRole = styled.p`
   margin: 0;
-  font-size: 11px;
+  font-size: 12px;
   color: ${({ theme }) => theme.textTertiary || "#aaa"};
 `;
 
@@ -341,4 +358,10 @@ const BtnMantto = styled.button`
   &:hover {
     background: rgba(255, 107, 43, 0.28);
   }
+`;
+const EmptyMsg = styled.p`
+  font-size: 13px;
+  color: ${({ theme }) => theme.textTertiary || "#aaa"};
+  text-align: center;
+  padding: 1.5rem 0;
 `;

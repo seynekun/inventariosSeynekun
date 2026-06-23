@@ -195,12 +195,7 @@ export const TableCategory = ({
           ))}
         </tbody>
       </table>
-      <Paginated
-        table={table}
-        irinicio={() => table.setPageIndex(0)}
-        pagina={table.getState().pagination.pageIndex + 1}
-        maximo={table.getPageCount()}
-      />
+      <Paginated table={table} />
     </Container>
   );
 };

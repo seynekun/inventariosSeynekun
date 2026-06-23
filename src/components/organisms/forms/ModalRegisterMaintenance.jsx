@@ -3,13 +3,14 @@ import styled from "styled-components";
 import ErrorMessaje from "../../atoms/ErrorMessaje";
 import { useState } from "react";
 import { useMemo } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   RegisterFacturaMaintenance,
   RegisterMaintenance,
 } from "../../../supabase/maintenance.actions";
 
 export default function ModalRegisterMaintenance({ onClose, hvidaId }) {
+  const queryClient = useQueryClient();
   const [facturaRows, setFacturaRows] = useState([
     { nro: "", valorUnitario: "", proveedor: "" },
   ]);
@@ -46,7 +47,7 @@ export default function ModalRegisterMaintenance({ onClose, hvidaId }) {
   const { mutateAsync } = useMutation({
     mutationFn: (p) => RegisterMaintenance(p),
     onSuccess: () => {
-      // queryClient.invalidateQueries(["mantenimientos", hvidaId]);
+      queryClient.invalidateQueries(["mantenimientos", hvidaId]);
       onClose(false);
     },
     onError: (err) => console.error(err),
@@ -55,30 +56,10 @@ export default function ModalRegisterMaintenance({ onClose, hvidaId }) {
   const queryFactura = useMutation({
     mutationFn: (p) => RegisterFacturaMaintenance(p),
     onSuccess: () => {
-      // queryClient.invalidateQueries(["mantenimientos", hvidaId]);
+      queryClient.invalidateQueries(["mantenimientos", hvidaId]);
       onClose(false);
     },
   });
-  // const { mutate: deleteMantto } = useMutation({
-  //   mutationFn: ({ id }) => DeleteMaintenance({ id }),
-  //   onSuccess: () => {
-  //     queryClient.invalidateQueries(["mantenimientos", hvidaId]);
-  //   },
-  // });
-  // const handleDelete = (id) => {
-  //   Swal.fire({
-  //     title: "¿Eliminar mantenimiento?",
-  //     text: "Se eliminarán también todas las facturas asociadas.",
-  //     icon: "warning",
-  //     showCancelButton: true,
-  //     confirmButtonColor: "#ff6b2b",
-  //     cancelButtonColor: "#aaa",
-  //     confirmButtonText: "Sí, eliminar",
-  //     cancelButtonText: "Cancelar",
-  //   }).then((result) => {
-  //     if (result.isConfirmed) deleteMantto({ id });
-  //   });
-  // };
 
   const onSubmit = async (data) => {
     const p = {
@@ -306,7 +287,7 @@ const ModalField = styled.div`
 `;
 
 const ModalLabel = styled.label`
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -381,7 +362,7 @@ const FacturaTable = styled.table`
 const Th = styled.th`
   background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
   color: #ff6b2b;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -424,7 +405,7 @@ const RemoveRowBtn = styled.button`
   border: none;
   color: #aaa;
   cursor: pointer;
-  font-size: 11px;
+  font-size: 12px;
   padding: 2px;
   &:hover {
     color: #e85d1f;
@@ -436,7 +417,7 @@ const AddRowBtn = styled.button`
   background: none;
   border: 0.5px dashed rgba(255, 107, 43, 0.4);
   color: #ff6b2b;
-  font-size: 11px;
+  font-size: 12px;
   padding: 5px 12px;
   border-radius: 5px;
   cursor: pointer;
@@ -447,7 +428,7 @@ const AddRowBtn = styled.button`
 `;
 const TotalTd = styled.td`
   padding: 7px 8px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;

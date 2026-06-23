@@ -17,6 +17,8 @@ import { Buscador } from "../Buscador";
 import { useCallback } from "react";
 import { useResumeProductsStore } from "../../../store/useResumeProductsStore";
 import { Link } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
+import { useCompanyStore } from "../../../store/companyStore";
 
 export const TableResumeProducts = ({
   data,
@@ -24,6 +26,8 @@ export const TableResumeProducts = ({
   setdataSelect,
   setAccion,
 }) => {
+  const queryClient = useQueryClient();
+  const dataCompany = useCompanyStore((state) => state.dataCompany);
   const deleteresumeproducts = useResumeProductsStore(
     (state) => state.deleteresumeproducts,
   );
@@ -45,6 +49,9 @@ export const TableResumeProducts = ({
     }).then(async (result) => {
       if (result.isConfirmed) {
         await deleteresumeproducts({ id: p });
+        queryClient.invalidateQueries({
+          queryKey: ["mostrar hojas de vida", dataCompany.id],
+        });
       }
     });
   }
@@ -237,12 +244,7 @@ export const TableResumeProducts = ({
           ))}
         </tbody>
       </table>
-      <Paginated
-        table={table}
-        irinicio={() => table.setPageIndex(0)}
-        pagina={table.getState().pagination.pageIndex + 1}
-        maximo={table.getPageCount()}
-      />
+      <Paginated table={table} />
     </Container>
   );
 };

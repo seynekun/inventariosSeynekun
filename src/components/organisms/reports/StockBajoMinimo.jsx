@@ -90,7 +90,7 @@ function StockBajoMinimo() {
                       stock: "Stock",
                       stock_minimo: "Stock Minimo",
                     },
-                    true
+                    true,
                   )}
                   {data?.map((movement) => renderTableRow(movement))}
                 </View>
